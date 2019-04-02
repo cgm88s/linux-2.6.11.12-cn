@@ -3652,7 +3652,7 @@ static void md_geninit(void)
 		p->proc_fops = &md_seq_fops;
 }
 
-/* SCSI模块初始化 */
+/* MD模块初始化: Multi-disk:软RAID */
 int __init md_init(void)
 {
 	int minor;

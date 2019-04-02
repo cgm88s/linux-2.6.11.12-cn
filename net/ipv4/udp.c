@@ -587,7 +587,7 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 	ipc.addr = inet->saddr;/* 源地址 */
 
 	ipc.oif = sk->sk_bound_dev_if;/* 源设备 */
-	if (msg->msg_controllen) {/* 有控制信息需要处理 */
+	if (msg->msg_controllen) {/* 有控制信息需要处理 ,通过sendmsg系统调用发送数据 */
 		err = ip_cmsg_send(msg, &ipc);/* 处理控制信息，如IP选项，源地址和源设备索引 */
 		if (err)/* 控制信息有误 */
 			return err;
@@ -615,7 +615,7 @@ int udp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
 		connected = 0;
 	}
 
-	if (MULTICAST(daddr)) {/* 组播地址 */
+	if (MULTICAST(daddr)) {/*多播/ 组播地址 */
 		if (!ipc.oif)/* 没有指定组播输出网络设备，则使用IP_MULTICAST_IF选项设置的默认组播设备 */
 			ipc.oif = inet->mc_index;
 		if (!saddr)/* 没有指定组播源地址，则使用IP_MULTICAST_IF选项设置的默认组播地址 */

@@ -271,7 +271,7 @@ int show_interrupts(struct seq_file *p, void *v)
 	if (i < NR_IRQS) {
 		spin_lock_irqsave(&irq_desc[i].lock, flags);
 		action = irq_desc[i].action;
-		if (!action)
+		if (!action)		//没有外设注册的中断irq,不显示
 			goto skip;
 		seq_printf(p, "%3d: ",i);
 #ifndef CONFIG_SMP

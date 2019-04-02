@@ -306,7 +306,7 @@ static inline void legacy_pty_init(void) { }
 #endif
 
 /* Unix98 devices */
-#ifdef CONFIG_UNIX98_PTYS
+#ifdef 1//CONFIG_UNIX98_PTYS
 /*
  * sysctl support for setting limits on the number of Unix98 ptys allocated.
  * Otherwise one can eat up all kernel memory by opening /dev/ptmx repeatedly.

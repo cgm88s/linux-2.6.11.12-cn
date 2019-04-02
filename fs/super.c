@@ -747,7 +747,7 @@ struct super_block *get_sb_bdev(struct file_system_type *fs_type,
 		/**
 		 * 每个文件系统传入的fill_super不一样，调用它来访问磁盘上的超级块信息，并填充超级块对象的其他字段。
 		 */
-		error = fill_super(s, data, flags & MS_VERBOSE ? 1 : 0);   ext3_fill_super
+		error = fill_super(s, data, flags & MS_VERBOSE ? 1 : 0);   ext2_fill_super ext3_fill_super
 		if (error) {
 			up_write(&s->s_umount);
 			deactivate_super(s);

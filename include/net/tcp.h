@@ -126,14 +126,14 @@ extern struct tcp_hashinfo {
 	 * First half of the table is for sockets not in TIME_WAIT, second half
 	 * is for TIME_WAIT sockets only.
 	 */
-	/* 该散列表中保存所有LISTEN状态以外的传输控制块 */
-	struct tcp_ehash_bucket *__tcp_ehash;
+
+	struct tcp_ehash_bucket *__tcp_ehash;	/* 该散列表中保存所有LISTEN状态以外的传输控制块 */
 
 	/* Ok, let's try this, I give up, we do need a local binding
 	 * TCP hash as well as the others for fast bind/connect.
 	 */
-	/* 已经绑定端口的散列表， */
-	struct tcp_bind_hashbucket *__tcp_bhash;
+						
+	struct tcp_bind_hashbucket *__tcp_bhash;/* 已经绑定端口的散列表， */
 
 	/* __tcp_bhash哈希桶大小 */
 	int __tcp_bhash_size;
@@ -153,11 +153,11 @@ extern struct tcp_hashinfo {
 	 * Now align to a new cache line as all the following members
 	 * are often dirty.
 	 */
-	/* 保护__tcp_lhash_users和__tcp_lhash_wait的锁 */
-	rwlock_t __tcp_lhash_lock ____cacheline_aligned;
-	/* 引用计数 */
+		/* 保护__tcp_lhash_users和__tcp_lhash_wait的锁 */
+	rwlock_t __tcp_lhash_lock ;//____cacheline_aligned;
+		/* 引用计数 */
 	atomic_t __tcp_lhash_users;
-	/* 在对hashinfo进行写锁时，如果引用计数器__tcp_lhash_users大于0，则会睡眠直到此字段为0，睡眠进程的描述符保存在本字段中 */
+		/* 在对hashinfo进行写锁时，如果引用计数器__tcp_lhash_users大于0，则会睡眠直到此字段为0，睡眠进程的描述符保存在本字段中 */
 	wait_queue_head_t __tcp_lhash_wait;
 	spinlock_t __tcp_portalloc_lock;
 } tcp_hashinfo;
@@ -509,7 +509,7 @@ static __inline__ int tcp_sk_listen_hashfn(struct sock *sk)
 					 */
 
 #define TCP_TW_RECYCLE_SLOTS_LOG	5
-#define TCP_TW_RECYCLE_SLOTS		(1<<TCP_TW_RECYCLE_SLOTS_LOG)
+#define TCP_TW_RECYCLE_SLOTS		(1<<TCP_TW_RECYCLE_SLOTS_LOG)   //32
 
 /* If time > 4sec, it is "slow" path, no recycling is required,
    so that we select tick to get range about 4 seconds.
@@ -1722,7 +1722,7 @@ static __inline__ void tcp_set_state(struct sock *sk, int state)
 	/* Change state AFTER socket is unhashed to avoid closed
 	 * socket sitting in hash tables.
 	 */
-	sk->sk_state = state;
+	sk->sk_state = state; 
 
 #ifdef STATE_TRACE
 	SOCK_DEBUG(sk, "TCP sk=%p, State %s -> %s\n",sk, statename[oldstate],statename[state]);
@@ -1739,7 +1739,7 @@ static __inline__ void tcp_done(struct sock *sk)
 	if (!sock_flag(sk, SOCK_DEAD))
 		sk->sk_state_change(sk);
 	else
-		tcp_destroy_sock(sk);
+		tcp_destroy_sock(sk);   //释放sock
 }
 
 static __inline__ void tcp_sack_reset(struct tcp_options_received *rx_opt)

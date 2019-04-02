@@ -582,9 +582,9 @@ static inline int __sock_sendmsg(struct kiocb *iocb, struct socket *sock,
 
 	err = security_socket_sendmsg(sock, msg, size);
 	if (err)
-		return err;
+		return err;				
 
-	return sock->ops->sendmsg(iocb, sock, msg, size);  //传输层接口方法 inet_stream_ops, inet_dgream_ops,inet_sockraw_ops
+	return sock->ops->sendmsg(iocb, sock, msg, size);  inet_sendmsg  //传输层接口方法 inet_stream_ops ; inet_dgram_ops ; inet_sockraw_ops ;
 }
 //发送数据
 int sock_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
@@ -1370,7 +1370,7 @@ asmlinkage long sys_bind(int fd, struct sockaddr __user *umyaddr, int addrlen)
 				return err;
 			}
 			/* 调用套接口层的bind回调，对IPV4来说，就是inet_bind */
-			err = sock->ops->bind(sock, (struct sockaddr *)address, addrlen);
+			err = sock->ops->bind(sock, (struct sockaddr *)address, addrlen);  inet_dgram_ops, inet_bind;inet_stream_ops,inet_bind;inet_sockraw_ops,inet_bind
 		}
 		/* 释放对文件句柄的引用 */
 		sockfd_put(sock);

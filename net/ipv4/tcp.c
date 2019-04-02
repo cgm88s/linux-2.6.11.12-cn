@@ -517,11 +517,11 @@ int tcp_listen_start(struct sock *sk)
 	 * after validation is complete.
 	 */
 	sk->sk_state = TCP_LISTEN;/* 设置控制块的状态 */
-	if (!sk->sk_prot->get_port(sk, inet->num)) {/* 进行端口绑定 */
+	if (!sk->sk_prot->get_port(sk, inet->num)) {/* 进行端口绑定 */    tcp_prot  tcp_v4_get_port
 		inet->sport = htons(inet->num);/* 设置网络字节序的端口号 */
 
-		sk_dst_reset(sk);/* 清除路由缓存 */
-		sk->sk_prot->hash(sk);/* 将传输控制块添加到侦听散列表中 */
+		sk_dst_reset(sk);/* 清除路由缓存 */ 
+		sk->sk_prot->hash(sk);/* 将传输控制块添加到侦听散列表中 */  tcp_prot   tcp_v4_hash
 
 		return 0;
 	}
@@ -1662,7 +1662,7 @@ void tcp_shutdown(struct sock *sk, int how)
  * can assume the socket waitqueue is inactive and nobody will
  * try to jump onto it.
  */
-void tcp_destroy_sock(struct sock *sk)
+void tcp_destroy_sock(struct sock *sk)  //释放socket,
 {
 	BUG_TRAP(sk->sk_state == TCP_CLOSE);
 	BUG_TRAP(sock_flag(sk, SOCK_DEAD));
@@ -1673,7 +1673,7 @@ void tcp_destroy_sock(struct sock *sk)
 	/* If it has not 0 inet_sk(sk)->num, it must be bound */
 	BUG_TRAP(!inet_sk(sk)->num || tcp_sk(sk)->bind_hash);
 
-	sk->sk_prot->destroy(sk);
+	sk->sk_prot->destroy(sk);   tcp_prot, udp_prot,raw_prot
 
 	sk_stream_kill_queues(sk);
 
@@ -1687,7 +1687,7 @@ void tcp_destroy_sock(struct sock *sk)
 #endif
 
 	atomic_dec(&tcp_orphan_count);
-	sock_put(sk);
+	sock_put(sk);				//sock->sk_refcnt引用计数-1，并释放sock
 }
 
 /* close系统调用的传输层实现 */

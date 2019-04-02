@@ -379,14 +379,14 @@ static __inline__ void __tcp_v4_hash(struct sock *sk, const int listen_possible)
 		lock = &tcp_ehash[sk->sk_hashent].lock;
 		write_lock(lock);
 	}
-	__sk_add_node(sk, list);
+	__sk_add_node(sk, list);   // 把 sock 加入到 tcp_hashinfo 表中
 	sock_prot_inc_use(sk->sk_prot);
 	write_unlock(lock);
 	if (listen_possible && sk->sk_state == TCP_LISTEN)
 		wake_up(&tcp_lhash_wait);
 }
 
-/* 将创建的连接加入到哈希表中 */
+/* 将创建的连接加入到tcp_hashinfo哈希表中 */
 static void tcp_v4_hash(struct sock *sk)
 {
 	if (sk->sk_state != TCP_CLOSE) {
@@ -1777,8 +1777,8 @@ int tcp_v4_do_rcv(struct sock *sk, struct sk_buff *skb)
 		goto csum_err;
 
 	if (sk->sk_state == TCP_LISTEN) {/* 如果是侦听套口，则处理被动连接 */
-		/* tcp_v4_hnd_req处理半连接状态的ACK消息 */
-		struct sock *nsk = tcp_v4_hnd_req(sk, skb);
+									
+		struct sock *nsk = tcp_v4_hnd_req(sk, skb);  /* tcp_v4_hnd_req处理半连接状态的SYN和ACK消息 */
 		if (!nsk)
 			goto discard;
 
@@ -1818,7 +1818,7 @@ csum_err:
 /*
  *	From tcp_input.c
  */
-/* 传输层报文处理入口 */
+/* L4传输层，TCPv4 报文处理入口 */
 int tcp_v4_rcv(struct sk_buff *skb)
 {
 	struct tcphdr *th;
@@ -1887,7 +1887,7 @@ process:/* 运行到这里，说明找到相应的传输套接口 */
 	ret = 0;
 	if (!sock_owned_by_user(sk)) {/* 如果进程没有访问传输控制块，则进行正常接收 */
 		if (!tcp_prequeue(sk, skb))
-			ret = tcp_v4_do_rcv(sk, skb);
+			ret = tcp_v4_do_rcv(sk, skb);  //正常收包
 	} else
 		sk_add_backlog(sk, skb);/* 将报文添加到后备队列中，待用户进程解锁控制块时处理 */
 	bh_unlock_sock(sk);

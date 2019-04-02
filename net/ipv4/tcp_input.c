@@ -5002,7 +5002,7 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 
 		if(th->syn) {/* 处理SYN报文请求 */
 			/* 处理客户端连接请求，tcp_v4_conn_request */
-			if(tp->af_specific->conn_request(sk, skb) < 0)
+			if(tp->af_specific->conn_request(sk, skb) < 0)			ipv4_specific.conn_request= tcp_v4_conn_request   //发送 ACK+SYN,第2个握手包
 				return 1;
 
 			init_westwood(sk);
@@ -5151,11 +5151,11 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 
 		case TCP_FIN_WAIT1:/* 处理FIN_WAIT1状态下接收到的ACK */
 			if (tp->snd_una == tp->write_seq) {/* 通过ACK段的确认，所有发送段对方都已经收到，则迁移到FIN_WAIT2状态 */
-				tcp_set_state(sk, TCP_FIN_WAIT2);
+				tcp_set_state(sk, TCP_FIN_WAIT2);  //把socket的状态置为 TCP_FIN_WAIT2
 				sk->sk_shutdown |= SEND_SHUTDOWN;
 				dst_confirm(sk->sk_dst_cache);/* 从对方收到ACK段，因此可以确认此路由缓存有效 */
 
-				if (!sock_flag(sk, SOCK_DEAD))/* 不在DEAD状态并且状态发生了变化，通过等待的线程 */
+				if (!sock_flag(sk, SOCK_DEAD))/* 不在DEAD状态并且状态发生了变化，通知等待的线程 */
 					/* Wake up lingering close() */
 					sk->sk_state_change(sk);
 				else {/* 在DEAD状态，则需要关闭传输控制块，或者在FIN_WAIT2状态等待 */
@@ -5171,9 +5171,9 @@ int tcp_rcv_state_process(struct sock *sk, struct sk_buff *skb,
 
 					/* 在FIN_WAIT2等待 */
 					tmo = tcp_fin_time(tp);
-					if (tmo > TCP_TIMEWAIT_LEN) {
+					if (tmo > TCP_TIMEWAIT_LEN) {    // 大于 60s
 						tcp_reset_keepalive_timer(sk, tmo - TCP_TIMEWAIT_LEN);
-					} else if (th->fin || sock_owned_by_user(sk)) {
+					} else if (th->fin || sock_owned_by_user(sk)) {   //FIN与ACK同时设置或当前是进程上下文
 						/* Bad case. We could lose such FIN otherwise.
 						 * It is not a big problem, but it looks confusing
 						 * and not so rare event. We still can lose it now,

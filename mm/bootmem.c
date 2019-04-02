@@ -252,7 +252,7 @@ found:
 	memset(ret, 0, size);
 	return ret;
 }
-
+//释放bootmem
 static unsigned long __init free_all_bootmem_core(pg_data_t *pgdat)
 {
 	struct page *page;
@@ -344,7 +344,7 @@ unsigned long __init free_all_bootmem_node (pg_data_t *pgdat)
 {
 	return(free_all_bootmem_core(pgdat));
 }
-
+//bootmem初始化。在buddy伙伴内存管理系统还没初始化起用来管理内存。新版本中被 memblock 取代。memblock_init()
 unsigned long __init init_bootmem (unsigned long start, unsigned long pages)
 {
 	max_low_pfn = pages;

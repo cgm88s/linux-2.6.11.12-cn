@@ -175,7 +175,7 @@ void (*_exits[])(void) = {
 	dm_interface_exit,
 };
 
-/* DM初始化 */
+/* DM初始化:device mapper */
 static int __init dm_init(void)
 {
 	const int count = ARRAY_SIZE(_inits);

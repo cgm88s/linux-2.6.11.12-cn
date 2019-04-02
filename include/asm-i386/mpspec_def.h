@@ -99,31 +99,31 @@ struct mpc_config_bus
 #define BUSTYPE_XPRESS	"XPRESS"
 #define BUSTYPE_NEC98	"NEC98"
 
-struct mpc_config_ioapic
+struct mpc_config_ioapic    // 表示 一个 IOAPIC  entry
 {
-	unsigned char mpc_type;
-	unsigned char mpc_apicid;
-	unsigned char mpc_apicver;
-	unsigned char mpc_flags;
+	unsigned char mpc_type;    // 2: IOAPIC entry
+	unsigned char mpc_apicid;  // IOAPIC id
+	unsigned char mpc_apicver; // IOAPIC 版本
+	unsigned char mpc_flags;   //  bit0: EN 标志， 为0表示disable,为1表示enable
 #define MPC_APIC_USABLE		0x01
-	unsigned long mpc_apicaddr;
+	unsigned long mpc_apicaddr; // IOAPIC 的基地址
 };
 
-struct mpc_config_intsrc
+struct mpc_config_intsrc   // 表示一个IOAPIC的 IO interrupt entry
 {
-	unsigned char mpc_type;
-	unsigned char mpc_irqtype;
-	unsigned short mpc_irqflag;
-	unsigned char mpc_srcbus;
-	unsigned char mpc_srcbusirq;
-	unsigned char mpc_dstapic;
-	unsigned char mpc_dstirq;
+	unsigned char mpc_type;		//  3:IOAPIC 中断
+	unsigned char mpc_irqtype;  // INT: IOAPIC 模式中断，  NMI, SMI,ExtINT
+	unsigned short mpc_irqflag; // PO:中断管脚极性, EL:触发模式
+	unsigned char mpc_srcbus;   // 产生中断的总线
+	unsigned char mpc_srcbusirq; //相对于产生中断的总线，该中断管脚代表的中断号，例如 0，相对于 ISA总线即 IRQ0
+	unsigned char mpc_dstapic;  //该中断连接的 IOAPIC， 0xff 表示连接到所有 IOAPIC
+	unsigned char mpc_dstirq;  //连接到 IOAPIC 的管脚号
 };
 
 enum mp_irq_source_types {
-	mp_INT = 0,
-	mp_NMI = 1,
-	mp_SMI = 2,
+	mp_INT = 0,		// IOAPIC 模式中断
+	mp_NMI = 1,		// NMI 中断		
+	mp_SMI = 2,		// SMI 系统管理中断
 	mp_ExtINT = 3
 };
 
@@ -132,7 +132,7 @@ enum mp_irq_source_types {
 #define MP_IRQDIR_LOW		3
 
 
-struct mpc_config_lintsrc
+struct mpc_config_lintsrc		// 表示 LAPIC 的一个 IO interrupt entry
 {
 	unsigned char mpc_type;
 	unsigned char mpc_irqtype;

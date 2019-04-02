@@ -683,7 +683,7 @@ rpc_execute(struct rpc_task *task)
 	BUG_ON(task->tk_active);
 
 	task->tk_active = 1;
-	rpc_set_running(task);
+	rpc_set_running(task);		//task->tk_runstate    RPC_TASK_RUNNING
 	return __rpc_execute(task);
 }
 

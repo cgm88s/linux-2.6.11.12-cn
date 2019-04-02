@@ -52,7 +52,7 @@
 #define PFX "SoftDog: "
 
 #define TIMER_MARGIN	60		/* Default is 60 seconds */
-static int soft_margin = TIMER_MARGIN;	/* in seconds */
+static int soft_margin = TIMER_MARGIN;	/* 60 in seconds */
 module_param(soft_margin, int, 0);
 MODULE_PARM_DESC(soft_margin, "Watchdog soft_margin in seconds. (0<soft_margin<65536, default=" __MODULE_STRING(TIMER_MARGIN) ")");
 
@@ -103,7 +103,7 @@ static void watchdog_fire(unsigned long data)
 }
 
 /*
- *	Softdog operations
+ *	Softdog operations  Ìí¼Ówatchdog ¶¨Ê±Æ÷£¬¼¤»îÈí¹·. ÖØÐÂ¼¤»îÈí¹·
  */
 
 static int softdog_keepalive(void)
@@ -111,7 +111,7 @@ static int softdog_keepalive(void)
 	mod_timer(&watchdog_ticktock, jiffies+(soft_margin*HZ));
 	return 0;
 }
-
+//¹ØµôÈí¹·£¬É¾³ýÈí¹·¶¨Ê±Æ÷watchdog
 static int softdog_stop(void)
 {
 	del_timer(&watchdog_ticktock);
@@ -140,7 +140,7 @@ static int softdog_open(struct inode *inode, struct file *file)
 	/*
 	 *	Activate timer
 	 */
-	softdog_keepalive();
+	softdog_keepalive();  //Ìí¼Ówatchdog¶¨Ê±Æ÷£¬¼¤»îÈí¹·
 	return nonseekable_open(inode, file);
 }
 
@@ -160,7 +160,7 @@ static int softdog_release(struct inode *inode, struct file *file)
 	expect_close = 0;
 	return 0;
 }
-
+//Î¹¹·
 static ssize_t softdog_write(struct file *file, const char __user *data, size_t len, loff_t *ppos)
 {
 	/*
@@ -182,7 +182,7 @@ static ssize_t softdog_write(struct file *file, const char __user *data, size_t 
 					expect_close = 42;
 			}
 		}
-		softdog_keepalive();
+		softdog_keepalive();  //ÖØÐÂÎ¹¹·
 	}
 	return len;
 }

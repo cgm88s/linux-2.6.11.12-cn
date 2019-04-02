@@ -577,22 +577,22 @@ static inline void put_page(struct page *page)
  *   to swap space and (later) to be read back into memory.
  */
 
-/* 2位的内存区域标志，10位的node节点区域
+/* 2位的内存区域标志，10位的node节点区域       /---10位的nid-----/--2位的zone--/-------/---------/
  * The zone field is never updated after free_area_init_core()
  * sets it, so none of the operations on it need to be atomic.
  * We'll have up to (MAX_NUMNODES * MAX_NR_ZONES) zones total,
  * so we use (MAX_NODES_SHIFT + MAX_ZONES_SHIFT) here to get enough bits.
  */
-#define NODEZONE_SHIFT (sizeof(page_flags_t)*8 - MAX_NODES_SHIFT - MAX_ZONES_SHIFT)  // 64-10-2
-#define NODEZONE(node, zone)	((node << ZONES_SHIFT) | zone)
+#define NODEZONE_SHIFT (sizeof(page_flags_t)*8 - MAX_NODES_SHIFT - MAX_ZONES_SHIFT)  // 64-10-2	= 52
+#define NODEZONE(node, zone)	((node << ZONES_SHIFT) | zone)		//( (node <<2) | zone )
 
 static inline unsigned long page_zonenum(struct page *page)
 {
-	return (page->flags >> NODEZONE_SHIFT) & (~(~0UL << ZONES_SHIFT));
+	return (page->flags >> NODEZONE_SHIFT) & (~(~0UL << ZONES_SHIFT)); // (page->flags >> 52) & (~( ~0UL <<2))
 }
 static inline unsigned long page_to_nid(struct page *page)
 {
-	return (page->flags >> (NODEZONE_SHIFT + ZONES_SHIFT));
+	return (page->flags >> (NODEZONE_SHIFT + ZONES_SHIFT));   // (page->flags >> 54)
 }
 
 struct zone;
@@ -603,13 +603,13 @@ extern struct zone *zone_table[];
  */
 static inline struct zone *page_zone(struct page *page)
 {
-	return zone_table[page->flags >> NODEZONE_SHIFT];  // page->falgs>> 52  (2位的zone,10位的node)
+	return zone_table[page->flags >> NODEZONE_SHIFT];  // page->flags >> 52  (10位的node,2位的zone)
 }
 
 static inline void set_page_zone(struct page *page, unsigned long nodezone_num)
 {
-	page->flags &= ~(~0UL << NODEZONE_SHIFT);
-	page->flags |= nodezone_num << NODEZONE_SHIFT;
+	page->flags &= ~(~0UL << NODEZONE_SHIFT);    // 高12位清零  (10位的node,2位的zone)
+	page->flags |= nodezone_num << NODEZONE_SHIFT;  //高12位设置为 nodezone_num
 }
 
 #ifndef CONFIG_DISCONTIGMEM

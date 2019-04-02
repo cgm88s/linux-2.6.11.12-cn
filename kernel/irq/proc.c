@@ -32,7 +32,7 @@ static int irq_affinity_read_proc(char *page, char **start, off_t off,
 
 int no_irq_affinity;
 static int irq_affinity_write_proc(struct file *file, const char __user *buffer,
-				   unsigned long count, void *data)
+				   unsigned long count, void *data)		// irq中断亲和性设置
 {
 	unsigned int irq = (int)(long)data, full_count = count, err;
 	cpumask_t new_value, tmp;

@@ -187,9 +187,9 @@ struct inet_sock {
 	/* 目的端口 */
 	__u16			dport;		/* Destination port */
 	/* 主机字节序的本地端口号 */
-	__u16			num;		/* Local port */
+	__u16			num;		/* Local port 源端口*/
 	/* 发送时使用的地址。如果为0，表示使用发送接口的地址(如绑定了广播、多播地址时) */
-	__u32			saddr;		/* Sending source */
+	__u32			saddr;		/* Sending source 源IP*/
 	/* 单播TTL */
 	int			uc_ttl;		/* Unicast TTL */
 	/* 用于设置报文首部的TOS域 */

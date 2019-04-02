@@ -46,8 +46,8 @@ static void start_one_pdflush_thread(void);
 /**
  * 所有pdflush内核线程的描述符链表。通过pdflush_lock自旋锁保护。
  */
-static LIST_HEAD(pdflush_list);
-static DEFINE_SPINLOCK(pdflush_lock);
+static LIST_HEAD(pdflush_list);   static struct list_head pdflush_list;
+static DEFINE_SPINLOCK(pdflush_lock); static struct spinlock_t pdflush_lock;
 
 /*
  * The count of currently-running pdflush threads.  Protected

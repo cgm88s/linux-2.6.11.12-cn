@@ -583,7 +583,7 @@ static struct inode * find_inode_fast(struct super_block * sb, struct hlist_head
 repeat:
 	hlist_for_each (node, head) {	//从指定的inode_hashtables中查找指定的inode
 		inode = hlist_entry(node, struct inode, i_hash);
-		if (inode->i_ino != ino)
+		if (inode->i_ino != ino)   
 			continue;
 		if (inode->i_sb != sb)
 			continue;

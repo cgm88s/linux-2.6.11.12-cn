@@ -286,8 +286,8 @@ void __init init_memory_mapping(unsigned long start, unsigned long end)
 	 */
 	find_early_table_space(end);
 
-	start = (unsigned long)__va(start);
-	end = (unsigned long)__va(end);
+	start = (unsigned long)__va(start);		//内核态直接映射 start + PAGE_OFFSET
+	end = (unsigned long)__va(end);        //内核态直接映射 end + PAGE_OFFSET
 
 	for (; start < end; start = next) {
 		int map;
@@ -318,7 +318,7 @@ void zap_low_mappings(void)
 	flush_tlb_all();
 }
 
-#ifndef CONFIG_DISCONTIGMEM
+#ifndef 0// CONFIG_DISCONTIGMEM
 void __init paging_init(void)
 {
 	{

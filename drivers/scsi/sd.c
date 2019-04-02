@@ -1641,7 +1641,7 @@ static void sd_shutdown(struct device *dev)
 
 	printk(KERN_NOTICE "Synchronizing SCSI cache for disk %s: \n",
 			sdkp->disk->disk_name);
-	sd_sync_cache(sdp);
+	sd_sync_cache(sdp);   //同步SCSI 设备的 CACHE，
 }	
 
 /**

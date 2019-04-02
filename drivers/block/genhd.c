@@ -210,7 +210,7 @@ void add_disk(struct gendisk *disk)
 	 * 建立设备驱动程序和设备的主设备号之间的连接。
 	 */
 	blk_register_region(MKDEV(disk->major, disk->first_minor),
-			    disk->minors, NULL, exact_match, exact_lock, disk);
+			    disk->minors, NULL, exact_match, exact_lock, disk);   // 注册到 bdev_map数组中
 	/**
 	 * 注册设备驱动程序模型的gendisk的kobject结构，它作为设备驱动程序的一个新设备。
 	 * 并扫描磁盘中的分区表，对每个分区，初始化其hd_struct描述符。同时注册设备驱动程序模型中的分区。

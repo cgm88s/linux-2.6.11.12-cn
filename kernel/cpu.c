@@ -175,7 +175,7 @@ int __devinit cpu_up(unsigned int cpu)
 	}
 
 	/* Arch-specific enabling code. */
-	ret = __cpu_up(cpu);
+	ret = __cpu_up(cpu);			start_secondary(void * unused)
 	if (ret != 0)
 		goto out_notify;
 	if (!cpu_online(cpu))

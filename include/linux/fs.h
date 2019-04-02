@@ -1395,7 +1395,7 @@ struct super_block {
 	/**
 	 * 所有索引节点链表
 	 */
-	struct list_head	s_inodes;	/* all inodes */
+	struct list_head	s_inodes;	/* all inodes */   struct inode.i_sb_list
 	/**
 	 * 脏索引节点链表
 	 */
@@ -1444,7 +1444,7 @@ struct super_block {
 	 * 指向特定文件系统的超级块信息的指针。各文件系统自定义。
 	 * 对ext2来说，是指向一个ext2_sb_info类型的结构。
 	 */
-	void 			*s_fs_info;	/* Filesystem private info */
+	void 			*s_fs_info;	/* Filesystem private info */   ext3_sb_info
 
 	/*
 	 * The next field is for VFS *only*. No filesystems have any business
@@ -2383,7 +2383,7 @@ static inline struct inode *iget(struct super_block *sb, unsigned long ino)
 	struct inode *inode = iget_locked(sb, ino); //查找或分配inode缓存
 	
 	if (inode && (inode->i_state & I_NEW)) {
-		sb->s_op->read_inode(inode);   ext3_sops; ext3_read_inode  //读文件系统的inode表
+		sb->s_op->read_inode(inode);   ext3_sops; ext2_sops; ext3_read_inode  //读文件系统的inode表
 		unlock_new_inode(inode);
 	}
 

@@ -143,20 +143,20 @@ void __init e820_bootmem_free(pg_data_t *pgdat, unsigned long start,unsigned lon
 /*
  * Find the highest page frame number we have available
  */
-unsigned long __init e820_end_of_ram(void)
+unsigned long __init e820_end_of_ram(void) //从 e820 内存映像中获取最大的可用页框号 end_pfn_map
 {
 	int i;
 	unsigned long end_pfn = 0;
 	
-	for (i = 0; i < e820.nr_map; i++) {
+	for (i = 0; i < e820.nr_map; i++) {     
 		struct e820entry *ei = &e820.map[i]; 
 		unsigned long start, end;
 
-		start = round_up(ei->addr, PAGE_SIZE); 
-		end = round_down(ei->addr + ei->size, PAGE_SIZE); 
+		start = round_up(ei->addr, PAGE_SIZE);    //向上取整
+		end = round_down(ei->addr + ei->size, PAGE_SIZE); 	//向下取整
 		if (start >= end)
 			continue;
-		if (ei->type == E820_RAM) { 
+		if (ei->type == E820_RAM) { 		//从e820 map中找到可用内存的最大页框号
 		if (end > end_pfn<<PAGE_SHIFT)
 			end_pfn = end>>PAGE_SHIFT;
 		} else { 
@@ -267,10 +267,10 @@ static int __init sanitize_e820_map(struct e820entry * biosmap, char * pnr_map)
 		struct e820entry *pbios; /* pointer to original bios entry */
 		unsigned long long addr; /* address for this change point */
 	};
-	static struct change_member change_point_list[2*E820MAX] __initdata;
-	static struct change_member *change_point[2*E820MAX] __initdata;
-	static struct e820entry *overlap_list[E820MAX] __initdata;
-	static struct e820entry new_bios[E820MAX] __initdata;
+	static struct change_member change_point_list[2*E820MAX];// __initdata;
+	static struct change_member *change_point[2*E820MAX];// __initdata;
+	static struct e820entry *overlap_list[E820MAX] ;//__initdata;
+	static struct e820entry new_bios[E820MAX] ;//__initdata;
 	struct change_member *change_tmp;
 	unsigned long current_type, last_type;
 	unsigned long long last_addr;

@@ -52,7 +52,7 @@
  * used for page->zone, so putting flag bits there doesn't work.
  */
 /**
- * 页框状态标志
+ * 页框状态标志	:/PG_nosave_free=19/PG_reclaim=18/PG_mappedtodisk=17/PG_swapcache=16/PG_compound=15/PG_nosave=14/PG_writeback=13/PG_private=12/PG_reserved=11/PG_arch_1=10/PG_checked=9/PG_highmem=8/PG_slab=7/PG_active=6/PG_lru=5/PG_dirty=4/PG_uptodate=3/PG_refenrenced=2/PG_error=1/PG_locked=0/
  */
 
 /**
@@ -264,7 +264,7 @@ extern void __mod_page_state(unsigned offset, unsigned long delta);
 
 #define SetPageLRU(page)	set_bit(PG_lru, &(page)->flags)
 #define PageLRU(page)		test_bit(PG_lru, &(page)->flags)
-#define TestSetPageLRU(page)	test_and_set_bit(PG_lru, &(page)->flags)
+#define TestSetPageLRU(page)	test_and_set_bit(PG_lru, &(page)->flags)		// 设置一个bit,并返回该位bit之前的旧值
 #define TestClearPageLRU(page)	test_and_clear_bit(PG_lru, &(page)->flags)
 
 #define PageActive(page)	test_bit(PG_active, &(page)->flags)

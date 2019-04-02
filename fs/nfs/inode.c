@@ -1922,24 +1922,24 @@ static int __init init_nfs_fs(void)
 {
 	int err;
 
-	err = nfs_init_nfspagecache();
+	err = nfs_init_nfspagecache();			// nfs_page_cachep  	struct nfs_page 对象缓存
 	if (err)
 		goto out4;
 
-	err = nfs_init_inodecache();
+	err = nfs_init_inodecache();			// nfs_inode_cachep 	struct nfs_inode 对象缓存
 	if (err)
 		goto out3;
 
-	err = nfs_init_readpagecache();
+	err = nfs_init_readpagecache();			// nfs_rdata_mempool nfs_rdata_cachep   struct nfs_read_data 对象缓存
 	if (err)
 		goto out2;
 
-	err = nfs_init_writepagecache();
+	err = nfs_init_writepagecache();		// nfs_commit_mempool nfs_wdata_mempool nfs_wdata_cachep  struct nfs_write_data 对象缓存
 	if (err)
 		goto out1;
 
 #ifdef CONFIG_NFS_DIRECTIO
-	err = nfs_init_directcache();
+	err = nfs_init_directcache();			// nfs_direct_cachep  struct nfs_direct_req 对象缓存
 	if (err)
 		goto out0;
 #endif

@@ -38,7 +38,7 @@
 
 #define DRV_VERSION	"2.6.1"
 #define DRV_RELDATE	"October 29, 2004"
-#define DRV_NAME	"bonding"
+#define DRV_NAME	"bonding"								//Çý¶¯Ãû 
 #define DRV_DESCRIPTION	"Ethernet Channel Bonding Driver"
 
 #define BOND_MAX_ARP_TARGETS	16

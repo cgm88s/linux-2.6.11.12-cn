@@ -393,7 +393,7 @@ static int bdev_set(struct inode *inode, void *data)
  * 所有的块设备描述符被插入在一个全局链表中，链表首部是由变量all_bdevs表示的。
  * 链表链表所用的指针位于块设备描述符的bd_list字段中。
  */
-static LIST_HEAD(all_bdevs);
+static LIST_HEAD(all_bdevs);   struct list_head all_bdevs;
 
 /**
  * 根据主次设备号获取块设备描述符的的地址。

@@ -831,7 +831,7 @@ struct file *dentry_open(struct dentry *dentry, struct vfsmount *mnt, int flags)
 	 * 如果文件系统的open方法被定义，则调用它。一般没有定义。
 	 */
 	if (f->f_op && f->f_op->open) {
-		error = f->f_op->open(inode,f);
+		error = f->f_op->open(inode,f);   //由具体的文件系统来初始并关联其特有的结构到file通用对像
 		if (error)
 			goto cleanup_all;
 	}

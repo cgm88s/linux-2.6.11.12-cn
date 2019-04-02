@@ -343,7 +343,7 @@ void rpc_clnt_sigunmask(struct rpc_clnt *clnt, sigset_t *oldset)
  */
 int rpc_call_sync(struct rpc_clnt *clnt, struct rpc_message *msg, int flags)
 {
-	struct rpc_task	*task;
+	struct rpc_task	*task;	  	
 	sigset_t	oldset;
 	int		status;
 
@@ -356,11 +356,11 @@ int rpc_call_sync(struct rpc_clnt *clnt, struct rpc_message *msg, int flags)
 	rpc_clnt_sigmask(clnt, &oldset);		
 
 	status = -ENOMEM;
-	task = rpc_new_task(clnt, NULL, flags);
+	task = rpc_new_task(clnt, NULL, flags);   //为指定的客户分配一个 rpc_task
 	if (task == NULL)
 		goto out;
 
-	rpc_call_setup(task, msg, 0);
+	rpc_call_setup(task, msg, 0);    // task->tk_msg= *msg
 
 	/* Set up the call info struct and execute the task */
 	if (task->tk_status == 0)
@@ -451,9 +451,9 @@ rpc_call_setup(struct rpc_task *task, struct rpc_message *msg, int flags)
 	if (task->tk_msg.rpc_cred != NULL) {
 		rpcauth_holdcred(task);
 	} else
-		rpcauth_bindcred(task);
+		rpcauth_bindcred(task);				//绑定当前用户的凭证
 
-	if (task->tk_status == 0)
+	if (task->tk_status == 0)    //
 		task->tk_action = call_start;
 	else
 		task->tk_action = NULL;

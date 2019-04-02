@@ -613,13 +613,13 @@ acpi_early_init (void)
 	if (!acpi_strict)
 		acpi_gbl_enable_interpreter_slack = TRUE;
 
-	status = acpi_initialize_subsystem();
+	status = acpi_initialize_subsystem();  //初始化所有ACPI代码
 	if (ACPI_FAILURE(status)) {
 		printk(KERN_ERR PREFIX "Unable to initialize the ACPI Interpreter\n");
 		goto error0;
 	}
-
-	status = acpi_load_tables();
+ 
+	status = acpi_load_tables();    // 从固件中加载 ACPI表并构建内部名称空间
 	if (ACPI_FAILURE(status)) {
 		printk(KERN_ERR PREFIX "Unable to load the System Description Tables\n");
 		goto error0;
@@ -657,7 +657,7 @@ acpi_early_init (void)
 	/**
 	 * acpi_enable_subsystem会安装SCI中断处理函数到do_IRQ中。
 	 */
-	status = acpi_enable_subsystem(~(ACPI_NO_HARDWARE_INIT | ACPI_NO_ACPI_ENABLE));
+	status = acpi_enable_subsystem(~(ACPI_NO_HARDWARE_INIT | ACPI_NO_ACPI_ENABLE));   //ACPI初始化完成，使能ACPI
 	if (ACPI_FAILURE(status)) {
 		printk(KERN_ERR PREFIX "Unable to enable ACPI\n");
 		goto error0;

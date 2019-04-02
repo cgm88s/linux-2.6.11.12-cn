@@ -87,7 +87,7 @@ void default_idle(void)
 	if (!atomic_read(&hlt_counter)) {
 		local_irq_disable();
 		if (!need_resched())
-			safe_halt(); // __asm__ __volatile__("sti; hlt": : :"memory")
+			safe_halt(); // __asm__ __volatile__("sti; hlt": : :"memory")    // sti 开启中断， hlt CPU暂停运行， lapic会中断唤醒此CPU
 		else
 			local_irq_enable();
 	}

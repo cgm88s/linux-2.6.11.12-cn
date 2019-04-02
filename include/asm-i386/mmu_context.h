@@ -16,7 +16,7 @@ void destroy_context(struct mm_struct *mm);
 
 static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
 {
-#ifdef CONFIG_SMP
+#ifdef 1//CONFIG_SMP
 	unsigned cpu = smp_processor_id();
 	if (per_cpu(cpu_tlbstate, cpu).state == TLBSTATE_OK)
 		per_cpu(cpu_tlbstate, cpu).state = TLBSTATE_LAZY;
@@ -29,17 +29,17 @@ static inline void switch_mm(struct mm_struct *prev,
 {
 	int cpu = smp_processor_id();
 
-	if (likely(prev != next)) {
+	if (likely(prev != next)) { // 如果 两个mm不相等
 		/* stop flush ipis for the previous mm */
-		cpu_clear(cpu, prev->cpu_vm_mask);
-#ifdef CONFIG_SMP
+		cpu_clear(cpu, prev->cpu_vm_mask);  // 清除 prev 的 位 bit掩码
+#ifdef 1//CONFIG_SMP
 		per_cpu(cpu_tlbstate, cpu).state = TLBSTATE_OK;
 		per_cpu(cpu_tlbstate, cpu).active_mm = next;
 #endif
-		cpu_set(cpu, next->cpu_vm_mask);
+		cpu_set(cpu, next->cpu_vm_mask);  // 设置next的 位bit掩码
 
 		/* Re-load page tables */
-		load_cr3(next->pgd);  //把下个即将要运行的进程的pgd的物理地址装入CR3寄存器
+		load_cr3(next->pgd);  //把下个即将要运行的进程的 pgd 的物理地址装入CR3寄存器
 
 		/*
 		 * load the LDT, if the LDT is different:
@@ -47,7 +47,7 @@ static inline void switch_mm(struct mm_struct *prev,
 		if (unlikely(prev->context.ldt != next->context.ldt))
 			load_LDT_nolock(&next->context, cpu);
 	}
-#ifdef CONFIG_SMP
+#ifdef 1//CONFIG_SMP
 	else {
 		per_cpu(cpu_tlbstate, cpu).state = TLBSTATE_OK;
 		BUG_ON(per_cpu(cpu_tlbstate, cpu).active_mm != next);

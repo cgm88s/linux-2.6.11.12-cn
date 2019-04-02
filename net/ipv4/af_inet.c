@@ -423,7 +423,7 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 
 	/* If the socket has its own bind function then use it. (RAW) */
 	if (sk->sk_prot->bind) {/* 如果传输层接口上实现了bind调用，则回调它。目前只有SOCK_RAW类型的传输层实现了该接口raw_bind */
-		err = sk->sk_prot->bind(sk, uaddr, addr_len);
+		err = sk->sk_prot->bind(sk, uaddr, addr_len);  udp_prot; tcp_prot;  raw_prot,raw_bind;
 		goto out;
 	}
 	err = -EINVAL;
@@ -483,7 +483,7 @@ int inet_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
 
 	/* Make sure we are allowed to bind here. */
 	/* 调用传输层的get_port来进行地址绑定。如tcp_v4_get_port或udp_v4_get_port */
-	if (sk->sk_prot->get_port(sk, snum)) {
+	if (sk->sk_prot->get_port(sk, snum)) {  udp_prot, udp_v4_get_port; tcp_prot,tcp_v4_get_port;raw_prot;
 		inet->saddr = inet->rcv_saddr = 0;
 		err = -EADDRINUSE;
 		goto out_release_sock;
@@ -582,7 +582,7 @@ int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
 			goto out;
 
 		/* 调用传输层接口tcp_connect进行连接操作，即发送SYN段 */
-		err = sk->sk_prot->connect(sk, uaddr, addr_len);
+		err = sk->sk_prot->connect(sk, uaddr, addr_len);  tcp_prot  tcp_v4_connect
 		if (err < 0)
 			goto out;
 
@@ -598,7 +598,7 @@ int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
 	}
 
 	/* 获取连接超时时间，如果指定非阻塞方式，则不等待直接返回 */
-	timeo = sock_sndtimeo(sk, flags & O_NONBLOCK);
+	timeo = sock_sndtimeo(sk, flags & O_NONBLOCK);   sk->sk_sndtimeo
 
 	if ((1 << sk->sk_state) & (TCPF_SYN_SENT | TCPF_SYN_RECV)) {/* 发送完SYN后，连接状态一般为这两种状态，但是如果连接建立非常快，则可能越过这两种状态 */
 		/* Error code is set above */
@@ -708,7 +708,7 @@ int inet_sendmsg(struct kiocb *iocb, struct socket *sock, struct msghdr *msg,
 	if (!inet_sk(sk)->num && inet_autobind(sk))
 		return -EAGAIN;
 
-	return sk->sk_prot->sendmsg(iocb, sk, msg, size); //传输层接口 tcp_prot,udp_prot,raw_prot
+	return sk->sk_prot->sendmsg(iocb, sk, msg, size); tcp_sendmsg; udp_sendmsg; //传输层接口 tcp_prot,udp_prot,raw_prot
 }
 
 
@@ -1090,17 +1090,17 @@ static int __init inet_init(void)
 		goto out;
 	}
 
-	rc = sk_alloc_slab(&tcp_prot, "tcp_sock");
+	rc = sk_alloc_slab(&tcp_prot, "tcp_sock");   //分配 tcp_sock对象缓存池
 	if (rc) {
 		sk_alloc_slab_error(&tcp_prot);
 		goto out;
 	}
-	rc = sk_alloc_slab(&udp_prot, "udp_sock");
+	rc = sk_alloc_slab(&udp_prot, "udp_sock"); //分配 udp_sock对象缓存池
 	if (rc) {
 		sk_alloc_slab_error(&udp_prot);
 		goto out_tcp_free_slab;
 	}
-	rc = sk_alloc_slab(&raw_prot, "raw_sock");
+	rc = sk_alloc_slab(&raw_prot, "raw_sock"); //分配 raw_sock对象缓存池
 	if (rc) {
 		sk_alloc_slab_error(&raw_prot);
 		goto out_udp_free_slab;
@@ -1138,7 +1138,7 @@ static int __init inet_init(void)
 	 *	Set the ARP module up
 	 */
 
-	arp_init();
+	arp_init();  //ARP初始化
 
   	/*
   	 *	Set the IP module up

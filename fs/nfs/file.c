@@ -151,7 +151,7 @@ nfs_file_read(struct kiocb *iocb, char __user * buf, size_t count, loff_t pos)
 
 #ifdef CONFIG_NFS_DIRECTIO
 	if (iocb->ki_filp->f_flags & O_DIRECT)
-		return nfs_file_direct_read(iocb, buf, count, pos);
+		return nfs_file_direct_read(iocb, buf, count, pos);   //Ö±½Ó¶Á
 #endif
 
 	dfprintk(VFS, "nfs: read(%s/%s, %lu@%lu)\n",

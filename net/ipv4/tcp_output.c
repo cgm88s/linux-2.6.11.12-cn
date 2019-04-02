@@ -397,7 +397,7 @@ static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb)
 		TCP_INC_STATS(TCP_MIB_OUTSEGS);
 
 		/* 调用IP层的发送函数发送报文 */
-		err = tp->af_specific->queue_xmit(skb, 0);
+		err = tp->af_specific->queue_xmit(skb, 0);  ipv4_specific  ip_queue_xmit
 		if (err <= 0)
 			return err;
 

@@ -390,11 +390,11 @@ EXPORT_SYMBOL(acpi_evaluate_object);
  ******************************************************************************/
 
 acpi_status
-acpi_walk_namespace (
+acpi_walk_namespace (     				// 使用底层(Acpi*系列函数来)遍历ACPI命名空间
 	acpi_object_type                type,
 	acpi_handle                     start_object,
 	u32                             max_depth,
-	acpi_walk_callback              user_function,
+	acpi_walk_callback              user_function,      //用户的回调处理函数
 	void                            *context,
 	void                            **return_value)
 {

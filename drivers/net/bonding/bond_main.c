@@ -529,16 +529,16 @@
 #define BOND_LINK_MON_INTERV	0
 #define BOND_LINK_ARP_INTERV	0
 
-static int max_bonds	= BOND_DEFAULT_MAX_BONDS;
-static int miimon	= BOND_LINK_MON_INTERV;
+static int max_bonds	= BOND_DEFAULT_MAX_BONDS; // 1
+static int miimon	= BOND_LINK_MON_INTERV;		//0
 static int updelay	= 0;
 static int downdelay	= 0;
 static int use_carrier	= 1;
 static char *mode	= NULL;
 static char *primary	= NULL;
 static char *lacp_rate	= NULL;
-static int arp_interval = BOND_LINK_ARP_INTERV;
-static char *arp_ip_target[BOND_MAX_ARP_TARGETS] = { NULL, };
+static int arp_interval = BOND_LINK_ARP_INTERV;    // 0
+static char *arp_ip_target[BOND_MAX_ARP_TARGETS] = { NULL, };	// 16
 
 module_param(max_bonds, int, 0);
 MODULE_PARM_DESC(max_bonds, "Max number of bonded devices");
@@ -566,9 +566,9 @@ MODULE_PARM_DESC(arp_ip_target, "arp targets in n.n.n.n form");
 static const char *version =
 	DRV_DESCRIPTION ": v" DRV_VERSION " (" DRV_RELDATE ")\n";
 
-static LIST_HEAD(bond_dev_list);
+static LIST_HEAD(bond_dev_list);   struct list_head  bond_dev_list;
 
-#ifdef CONFIG_PROC_FS
+#ifdef 1 //CONFIG_PROC_FS
 static struct proc_dir_entry *bond_proc_dir = NULL;
 #endif
 
@@ -598,13 +598,13 @@ static struct bond_parm_tbl bond_lacp_tbl[] = {
 };
 
 static struct bond_parm_tbl bond_mode_tbl[] = {
-{	"balance-rr",		BOND_MODE_ROUNDROBIN},
-{	"active-backup",	BOND_MODE_ACTIVEBACKUP},
-{	"balance-xor",		BOND_MODE_XOR},
-{	"broadcast",		BOND_MODE_BROADCAST},
-{	"802.3ad",		BOND_MODE_8023AD},
-{	"balance-tlb",		BOND_MODE_TLB},
-{	"balance-alb",		BOND_MODE_ALB},
+{	"balance-rr",		BOND_MODE_ROUNDROBIN},				//模式 0，balance-rr  轮循
+{	"active-backup",	BOND_MODE_ACTIVEBACKUP},			//模式 1，active-backup 主备
+{	"balance-xor",		BOND_MODE_XOR},						//模式 2，balance-xor  哈希散列
+{	"broadcast",		BOND_MODE_BROADCAST},				//模式 3，broadcase	广播模式
+{	"802.3ad",		BOND_MODE_8023AD},						//模式 4，802.3ad	     动态链路聚合
+{	"balance-tlb",		BOND_MODE_TLB},						//模式 5，balance-tlb  自适应发送负载均衡
+{	"balance-alb",		BOND_MODE_ALB},						//模式 6，balance-alb   自适应负载均衡(发送与接收)
 {	NULL,			-1},
 };
 
@@ -3280,7 +3280,7 @@ static struct file_operations bond_info_fops = {
 	.release = seq_release,
 };
 
-static int bond_create_proc_entry(struct bonding *bond)
+static int bond_create_proc_entry(struct bonding *bond)  //为bond设备创建文件 /proc/net/bonding/ bond%d
 {
 	struct net_device *bond_dev = bond->dev;
 
@@ -3315,9 +3315,9 @@ static void bond_remove_proc_entry(struct bonding *bond)
 /* Create the bonding directory under /proc/net, if doesn't exist yet.
  * Caller must hold rtnl_lock.
  */
-static void bond_create_proc_dir(void)
+static void bond_create_proc_dir(void)    //创建 /proc/net/bonding 目录
 {
-	int len = strlen(DRV_NAME);
+	int len = strlen(DRV_NAME);  // 驱动名为 bonding  <-- bonding.h
 
 	for (bond_proc_dir = proc_net->subdir; bond_proc_dir;
 	     bond_proc_dir = bond_proc_dir->next) {
@@ -3376,9 +3376,9 @@ static void bond_destroy_proc_dir(void)
  */
 static int bond_event_changename(struct bonding *bond)
 {
-#ifdef CONFIG_PROC_FS
-	bond_remove_proc_entry(bond);
-	bond_create_proc_entry(bond);
+#ifdef 1 //CONFIG_PROC_FS
+	bond_remove_proc_entry(bond);    // 移除 /proc/net/bonding/ bond%d
+	bond_create_proc_entry(bond);	// 创建 /proc/net/bonding/ bond%d
 #endif
 
 	return NOTIFY_DONE;
@@ -4260,7 +4260,7 @@ static inline void bond_set_mode_ops(struct net_device *bond_dev, int mode)
 
 /*
  * Does not allocate but creates a /proc entry.
- * Allowed to fail.
+ * Allowed to fail. 初始化bond设备，加入全局链表
  */
 static int __init bond_init(struct net_device *bond_dev, struct bond_params *params)
 {
@@ -4319,11 +4319,11 @@ static int __init bond_init(struct net_device *bond_dev, struct bond_params *par
 			       NETIF_F_HW_VLAN_RX |
 			       NETIF_F_HW_VLAN_FILTER);
 
-#ifdef CONFIG_PROC_FS
-	bond_create_proc_entry(bond);
+#ifdef 1 //CONFIG_PROC_FS
+	bond_create_proc_entry(bond);   //为 bond设备创建 /proc/net/bonding/bond%d 
 #endif
 
-	list_add_tail(&bond->bond_list, &bond_dev_list);
+	list_add_tail(&bond->bond_list, &bond_dev_list);  //把 bond设备加入全局链表 bond_dev_list
 
 	return 0;
 }
@@ -4383,13 +4383,13 @@ static inline int bond_parse_parm(char *mode_arg, struct bond_parm_tbl *tbl)
 	return -1;
 }
 
-static int bond_check_params(struct bond_params *params)
+static int bond_check_params(struct bond_params *params)   //检查并解析bonding模块参数 
 {
 	/*
 	 * Convert string parameters.
 	 */
 	if (mode) {
-		bond_mode = bond_parse_parm(mode, bond_mode_tbl);
+		bond_mode = bond_parse_parm(mode, bond_mode_tbl);   //解析 bonding 模块 的 模块参数 mode
 		if (bond_mode == -1) {
 			printk(KERN_ERR DRV_NAME
 			       ": Error: Invalid bonding mode \"%s\"\n",
@@ -4398,13 +4398,13 @@ static int bond_check_params(struct bond_params *params)
 		}
 	}
 
-	if (lacp_rate) {
-		if (bond_mode != BOND_MODE_8023AD) {
+	if (lacp_rate) {			//lacp rx 速率
+		if (bond_mode != BOND_MODE_8023AD) {		// lacp rx 速率 只在 802.3ad 模式下有效
 			printk(KERN_INFO DRV_NAME
 			       ": lacp_rate param is irrelevant in mode %s\n",
 			       bond_mode_name(bond_mode));
 		} else {
-			lacp_fast = bond_parse_parm(lacp_rate, bond_lacp_tbl);
+			lacp_fast = bond_parse_parm(lacp_rate, bond_lacp_tbl);	// 解析bonding模块的 模块参数 lacp_rate
 			if (lacp_fast == -1) {
 				printk(KERN_ERR DRV_NAME
 				       ": Error: Invalid lacp rate \"%s\"\n",
@@ -4463,7 +4463,7 @@ static int bond_check_params(struct bond_params *params)
 			       "failure, speed and duplex which are "
 			       "essential for 802.3ad operation\n");
 			printk(KERN_WARNING "Forcing miimon to 100msec\n");
-			miimon = 100;
+			miimon = 100;    // 802.3ad模式下 链路检查 时间间隔 毫秒
 		}
 	}
 
@@ -4477,7 +4477,7 @@ static int bond_check_params(struct bond_params *params)
 			       "failure and link speed which are essential "
 			       "for TLB/ALB load balancing\n");
 			printk(KERN_WARNING "Forcing miimon to 100msec\n");
-			miimon = 100;
+			miimon = 100;  
 		}
 	}
 
@@ -4627,35 +4627,35 @@ static int bond_check_params(struct bond_params *params)
 	return 0;
 }
 
-static int __init bonding_init(void)
+static int __init bonding_init(void)	// bonding 模块 初始化
 {
 	struct bond_params params;
 	int i;
 	int res;
 
-	printk(KERN_INFO "%s", version);
+	printk(KERN_INFO "%s", version); // 打印版本信息
 
-	res = bond_check_params(&params);
+	res = bond_check_params(&params);  //检查并解析bonding 模块参数
 	if (res) {
 		return res;
 	}
 
 	rtnl_lock();
 
-#ifdef CONFIG_PROC_FS
-	bond_create_proc_dir();
+#ifdef 1 //CONFIG_PROC_FS
+	bond_create_proc_dir();  //创建 /proc/net/bonding目录
 #endif
 
 	for (i = 0; i < max_bonds; i++) {
 		struct net_device *bond_dev;
 
-		bond_dev = alloc_netdev(sizeof(struct bonding), "", ether_setup);
+		bond_dev = alloc_netdev(sizeof(struct bonding), "", ether_setup);  //分配 net_device设备 
 		if (!bond_dev) {
 			res = -ENOMEM;
 			goto out_err;
 		}
 
-		res = dev_alloc_name(bond_dev, "bond%d");
+		res = dev_alloc_name(bond_dev, "bond%d");   // 设置设备名称为 bond%d
 		if (res < 0) {
 			free_netdev(bond_dev);
 			goto out_err;
@@ -4665,7 +4665,7 @@ static int __init bonding_init(void)
 		 * /proc files), but before register_netdevice(), because we
 		 * need to set function pointers.
 		 */
-		res = bond_init(bond_dev, &params);
+		res = bond_init(bond_dev, &params);  //用初始化数初始化 bond设备
 		if (res < 0) {
 			free_netdev(bond_dev);
 			goto out_err;
@@ -4673,7 +4673,7 @@ static int __init bonding_init(void)
 
 		SET_MODULE_OWNER(bond_dev);
 
-		res = register_netdevice(bond_dev);
+		res = register_netdevice(bond_dev);  //注册网络设备
 		if (res < 0) {
 			bond_deinit(bond_dev);
 			free_netdev(bond_dev);
@@ -4682,7 +4682,7 @@ static int __init bonding_init(void)
 	}
 
 	rtnl_unlock();
-	register_netdevice_notifier(&bond_netdev_notifier);
+	register_netdevice_notifier(&bond_netdev_notifier); bond_netdev_event
 
 	return 0;
 

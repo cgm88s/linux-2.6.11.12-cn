@@ -126,7 +126,7 @@ do_register(const char *name, void *data, struct file_operations *fops)
 }
 
 struct proc_dir_entry *
-rpc_proc_register(struct rpc_stat *statp)
+rpc_proc_register(struct rpc_stat *statp)	// nfs_rpcstat
 {
 	return do_register(statp->program->name, statp, &rpc_proc_fops);
 }

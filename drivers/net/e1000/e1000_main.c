@@ -186,7 +186,7 @@ struct notifier_block e1000_notifier_reboot = {
 
 extern void e1000_check_options(struct e1000_adapter *adapter);
 
-static struct pci_driver e1000_driver = {
+static struct pci_driver e1000_driver = {	//e1000驱动
 	.name     = e1000_driver_name,
 	.id_table = e1000_pci_tbl,
 	.probe    = e1000_probe,
@@ -222,7 +222,7 @@ e1000_init_module(void)
 
 	printk(KERN_INFO "%s\n", e1000_copyright);
 
-	ret = pci_module_init(&e1000_driver);
+	ret = pci_module_init(&e1000_driver);	//注册e1000驱动
 	if(ret >= 0) {
 		register_reboot_notifier(&e1000_notifier_reboot);
 	}
@@ -403,7 +403,7 @@ e1000_reset(struct e1000_adapter *adapter)
 
 static int __devinit
 e1000_probe(struct pci_dev *pdev,
-            const struct pci_device_id *ent)
+            const struct pci_device_id *ent)   //e1000驱动初始扫描函数
 {
 	struct net_device *netdev;
 	struct e1000_adapter *adapter;
@@ -415,10 +415,10 @@ e1000_probe(struct pci_dev *pdev,
 	int err;
 	uint16_t eeprom_data;
 
-	if((err = pci_enable_device(pdev)))
+	if((err = pci_enable_device(pdev)))		//使能PCI设备
 		return err;
 
-	if(!(err = pci_set_dma_mask(pdev, DMA_64BIT_MASK))) {
+	if(!(err = pci_set_dma_mask(pdev, DMA_64BIT_MASK))) {	//设置DMA掩码
 		pci_using_dac = 1;
 	} else {
 		if((err = pci_set_dma_mask(pdev, DMA_32BIT_MASK))) {
@@ -428,12 +428,12 @@ e1000_probe(struct pci_dev *pdev,
 		pci_using_dac = 0;
 	}
 
-	if((err = pci_request_regions(pdev, e1000_driver_name)))
+	if((err = pci_request_regions(pdev, e1000_driver_name)))    //申请IO或内存资源
 		return err;
 
-	pci_set_master(pdev);
+	pci_set_master(pdev);		//使能DMA
 
-	netdev = alloc_etherdev(sizeof(struct e1000_adapter));
+	netdev = alloc_etherdev(sizeof(struct e1000_adapter)); //分配通用网络设备struct net_device + 具体的网卡struct e1000_adapter
 	if(!netdev) {
 		err = -ENOMEM;
 		goto err_alloc_etherdev;

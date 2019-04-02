@@ -78,7 +78,7 @@ void __init proc_root_init(void)
 #endif
 	proc_bus = proc_mkdir("bus", NULL);
 }
-
+// 查找 /proc/ 目录下的 路径名
 static struct dentry *proc_root_lookup(struct inode * dir, struct dentry * dentry, struct nameidata *nd)
 {
 	/*
@@ -89,11 +89,11 @@ static struct dentry *proc_root_lookup(struct inode * dir, struct dentry * dentr
 	if (dir->i_ino == PROC_ROOT_INO) /* check for safety... */
 		dir->i_nlink = proc_root.nlink + nr_threads;
 
-	if (!proc_lookup(dir, dentry, nd)) {
+	if (!proc_lookup(dir, dentry, nd)) {    // 查找 /proc 目录下的文件与目录， 不包括进程相关的目录
 		return NULL;
 	}
 	
-	return proc_pid_lookup(dir, dentry, nd);
+	return proc_pid_lookup(dir, dentry, nd);  // 查找 /proc 目录下进程相关的目录
 }
 
 static int proc_root_readdir(struct file * filp,

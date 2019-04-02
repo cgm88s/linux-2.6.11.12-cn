@@ -256,7 +256,7 @@ static inline int ip_local_deliver_finish(struct sk_buff *skb)
 		/**
 		 * 查找内核中注册的协议处理函数。
 		 */
-		if ((ipprot = rcu_dereference(inet_protos[hash])) != NULL) {
+		if ((ipprot = rcu_dereference(inet_protos[hash])) != NULL) {  //l4传输层协议 icmp_protocol udp_protocol  tcp_protocol igmp_protocol
 			int ret;
 
 			/**
@@ -270,7 +270,7 @@ static inline int ip_local_deliver_finish(struct sk_buff *skb)
 			/**
 			 * 调用L4层处理函数。
 			 */
-			ret = ipprot->handler(skb);
+			ret = ipprot->handler(skb);  //L4层传输层协议入口  icmp_rcv, udp_rcv,tcp_v4_rcv, igmp_rcv
 			if (ret < 0) {/* 这里应该是处理IPSEC */
 				protocol = -ret;
 				goto resubmit;
@@ -441,7 +441,7 @@ static inline int ip_rcv_finish(struct sk_buff *skb)
 	 * skb->dst->input会设成ip_local_deliver或ip_forward，这取决于包的目的地址。
 	 * 因此，调用dst_input时，就可以完成包的处理。
 	 */
-	return dst_input(skb);
+	return dst_input(skb);   ip_local_deliver / ip_forward
 
 inhdr_error:
 	IP_INC_STATS_BH(IPSTATS_MIB_INHDRERRORS);
@@ -568,7 +568,7 @@ int ip_rcv(struct sk_buff *skb, struct net_device *dev, struct packet_type *pt)
 	 * 如果通过了防火墙的检测，那么就调用ip_rcv_finish进行真正的路由决策。
 	 */
 	return NF_HOOK(PF_INET, NF_IP_PRE_ROUTING, skb, dev, NULL,
-		       ip_rcv_finish);
+		       ip_rcv_finish);			//pre_routing 防火墙过滤点
 
 inhdr_error:
 	IP_INC_STATS_BH(IPSTATS_MIB_INHDRERRORS);

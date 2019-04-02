@@ -121,7 +121,7 @@ extern void dma_unmap_sg(struct device *hwdev, struct scatterlist *sg,
 extern int dma_supported(struct device *hwdev, u64 mask);
 extern int dma_get_cache_alignment(void);
 #define dma_is_consistent(h) 1
-
+//设置设备的DMA寻址范围
 static inline int dma_set_mask(struct device *dev, u64 mask)
 {
 	if (!dev->dma_mask || !dma_supported(dev, mask))

@@ -37,7 +37,7 @@
 
 /* Have we found an MP table */
 int smp_found_config;
-unsigned int __initdata maxcpus = NR_CPUS;
+unsigned int /*__initdata*/ maxcpus = NR_CPUS;
 
 /*
  * Various Linux-internal data structures created from the
@@ -52,10 +52,10 @@ int mp_bus_id_to_pci_bus [MAX_MP_BUSSES] = { [0 ... MAX_MP_BUSSES-1] = -1 };
 int mp_current_pci_id;
 
 /* I/O APIC entries */
-struct mpc_config_ioapic mp_ioapics[MAX_IO_APICS];
+struct mpc_config_ioapic mp_ioapics[MAX_IO_APICS];   // 记录系统中 IOAPIC 的数量
 
 /* # of MP IRQ source entries */
-struct mpc_config_intsrc mp_irqs[MAX_IRQ_SOURCES];
+struct mpc_config_intsrc mp_irqs[MAX_IRQ_SOURCES];   //
 
 /* MP IRQ source entries */
 int mp_irq_entries;
@@ -102,7 +102,7 @@ static int __init mpf_checksum(unsigned char *mp, int len)
  */
 
 static int mpc_record; 
-static struct mpc_config_translation *translation_table[MAX_MPC_ENTRY] __initdata;
+static struct mpc_config_translation *translation_table[MAX_MPC_ENTRY];// __initdata;
 
 #ifdef CONFIG_X86_NUMAQ
 static int MP_valid_apicid(int apicid, int version)

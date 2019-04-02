@@ -1060,9 +1060,9 @@ fib_convert_rtentry(int cmd, struct nlmsghdr *nl, struct rtmsg *rtm,
 	      both family and mask are zero.
 	 */
 	plen = 32;
-	ptr = &((struct sockaddr_in*)&r->rt_dst)->sin_addr.s_addr;
+	ptr = &((struct sockaddr_in*)&r->rt_dst)->sin_addr.s_addr;  //目的网络地址
 	if (!(r->rt_flags&RTF_HOST)) {
-		u32 mask = ((struct sockaddr_in*)&r->rt_genmask)->sin_addr.s_addr;
+		u32 mask = ((struct sockaddr_in*)&r->rt_genmask)->sin_addr.s_addr;  // 网关掩码
 		if (r->rt_genmask.sa_family != AF_INET) {
 			if (mask || r->rt_genmask.sa_family)
 				return -EAFNOSUPPORT;
@@ -1111,11 +1111,11 @@ fib_convert_rtentry(int cmd, struct nlmsghdr *nl, struct rtmsg *rtm,
 		colon = strchr(devname, ':');
 		if (colon)
 			*colon = 0;
-		dev = __dev_get_by_name(devname);
+		dev = __dev_get_by_name(devname);  //通过设备名找到 网络设备
 		if (!dev)
 			return -ENODEV;
 		rta->rta_oif = &dev->ifindex;
-		if (colon) {
+		if (colon) {   // 子网口   eth1:1
 			struct in_ifaddr *ifa;
 			struct in_device *in_dev = __in_dev_get(dev);
 			if (!in_dev)

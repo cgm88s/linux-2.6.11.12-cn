@@ -229,7 +229,7 @@ static __inline__ int inet_ifa_match(u32 addr, struct in_ifaddr *ifa)
  *	Check if a mask is acceptable.
  */
  
-static __inline__ int bad_mask(u32 mask, u32 addr)
+static __inline__ int bad_mask(u32 mask, u32 addr)  //检查掩码的可用性
 {
 	if (addr & (mask = ~mask))
 		return 1;
@@ -309,7 +309,7 @@ static __inline__ int inet_mask_len(__u32 mask)
 {
 	if (!(mask = ntohl(mask)))
 		return 0;
-	return 32 - ffz(~mask);
+	return 32 - ffz(~mask);  //返回掩码长度
 }
 
 

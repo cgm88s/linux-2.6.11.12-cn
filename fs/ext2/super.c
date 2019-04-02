@@ -1173,7 +1173,7 @@ static int __init init_ext2_fs(void)
 	err = init_inodecache();
 	if (err)
 		goto out1;
-        err = register_filesystem(&ext2_fs_type);
+        err = register_filesystem(&ext2_fs_type);	//注册 ext2文件系统
 	if (err)
 		goto out;
 	return 0;

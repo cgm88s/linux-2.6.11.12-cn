@@ -403,7 +403,7 @@ static dma_addr_t dma_map_area(struct device *dev, unsigned long phys_mem,
 	}
 	return iommu_bus_base + iommu_page*PAGE_SIZE + (phys_mem & ~PAGE_MASK);
 }
-
+//映射一个流式DMA缓存
 /* Map a single area into the IOMMU */
 dma_addr_t dma_map_single(struct device *dev, void *addr, size_t size, int dir)
 {
@@ -506,7 +506,7 @@ static inline int dma_map_cont(struct scatterlist *sg, int start, int stopat,
 	} 
 	return __dma_map_cont(sg, start, stopat, sout, pages);
 }
-		
+//映射一个sg区域(分散，聚合链表)的DMA缓存		
 /*
  * DMA map all entries in a scatterlist.
  * Merge chunks that have page aligned sizes into a continuous mapping. 

@@ -90,7 +90,7 @@ extern unsigned char trampoline_end  [];
 
 static unsigned long __init setup_trampoline(void)
 {
-	void *tramp = __va(SMP_TRAMPOLINE_BASE); 
+	void *tramp = __va(SMP_TRAMPOLINE_BASE);   //获取 trampoline.S 代码的入口地址
 	extern volatile __u32 tramp_gdt_ptr; 
 	tramp_gdt_ptr = __pa_symbol(&cpu_gdt_table); 
 	memcpy(tramp, trampoline_data, trampoline_end - trampoline_data);
@@ -571,7 +571,7 @@ static void __init do_boot_cpu (int apicid)
 	cpu_pda[cpu].pcurrent = idle;  //设置全局数组信息
 
 	start_rip = setup_trampoline(); //设置 AP的 rip     BP:启动处理器，AP:应用处理器
-
+							// initialize_secondary 跳转到线程的eip
 	init_rsp = idle->thread.rsp; 
 	per_cpu(init_tss,cpu).rsp0 = init_rsp;
 	initial_code = start_secondary;

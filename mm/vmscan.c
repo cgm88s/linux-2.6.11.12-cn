@@ -151,8 +151,8 @@ static long total_memory;
 /**
  * 所有磁盘高速缓存压缩函数的双向链表。
  */
-static LIST_HEAD(shrinker_list);
-static DECLARE_RWSEM(shrinker_rwsem);
+static LIST_HEAD(shrinker_list);   struct list_head shrinker_list;
+static DECLARE_RWSEM(shrinker_rwsem);  struct rw_semp;
 
 /*
  * Add a shrinker callback to be called from the vm
@@ -1646,7 +1646,7 @@ static int __init kswapd_init(void)
 {
 	pg_data_t *pgdat;
 	swap_setup();
-	for_each_pgdat(pgdat)
+	for_each_pgdat(pgdat)     pgdat_list  // 遍历全局内存节点链表
 		pgdat->kswapd
 		= find_task_by_pid(kernel_thread(kswapd, pgdat, CLONE_KERNEL));
 	total_memory = nr_free_pagecache_pages();

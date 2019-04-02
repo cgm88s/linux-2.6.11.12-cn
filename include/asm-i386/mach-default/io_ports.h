@@ -14,8 +14,8 @@
 
 /* i8259A PIC registers */
 #define PIC_MASTER_CMD		0x20
-#define PIC_MASTER_IMR		0x21
-#define PIC_MASTER_ISR		PIC_MASTER_CMD
+#define PIC_MASTER_IMR		0x21		//Interrupt Mask Register(IMR) 用作过滤被屏蔽的中断
+#define PIC_MASTER_ISR		PIC_MASTER_CMD	//
 #define PIC_MASTER_POLL		PIC_MASTER_ISR
 #define PIC_MASTER_OCW3		PIC_MASTER_ISR
 #define PIC_SLAVE_CMD		0xa0

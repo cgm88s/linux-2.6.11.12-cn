@@ -77,7 +77,7 @@ extern unsigned long pgkern_mask;
  * and page-granular flushes are available only on i486 and up.
  */
 
-#ifndef CONFIG_SMP
+#ifndef 1//CONFIG_SMP
 
 #define flush_tlb() __flush_tlb()
 #define flush_tlb_all() __flush_tlb_all()
@@ -131,7 +131,7 @@ struct tlb_state
 	int state;
 	char __cacheline_padding[L1_CACHE_BYTES-8];
 };
-DECLARE_PER_CPU(struct tlb_state, cpu_tlbstate);
+DECLARE_PER_CPU(struct tlb_state, cpu_tlbstate);  struct tlb_state cpu_tlbstate;
 
 
 #endif

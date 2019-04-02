@@ -325,7 +325,7 @@ extern void d_rehash(struct dentry *);
  
 static inline void d_add(struct dentry *entry, struct inode *inode)
 {
-	d_instantiate(entry, inode);
+	d_instantiate(entry, inode);  entry->d_inode=inode
 	d_rehash(entry);
 }
 

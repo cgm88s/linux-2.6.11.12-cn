@@ -42,7 +42,7 @@ struct thread_info {
 	 */
 	__u32			cpu;		/* current CPU */
 	__s32			preempt_count; /* 0 => preemptable, <0 => BUG */ //preempt_disable()=+1 ,preempt_enable()=-1;
-									//为0表示可以抢占，为1表示不可抢占
+									//为0表示可以抢占，为1表示不可抢占.  0~7:位表示抢占计数  8~15:软中断中数 16~27:硬中断计数 28:使能抢占
 
 	mm_segment_t		addr_limit;	/* thread address space:
 					 	   0-0xBFFFFFFF for user-thead

@@ -98,7 +98,7 @@ static struct file_operations neigh_stat_seq_fops;
 /**
  * 保护邻居协议链表的锁。
  */
-static DEFINE_RWLOCK(neigh_tbl_lock);
+static DEFINE_RWLOCK(neigh_tbl_lock);  rwlock_t neigh_tbl_lock;
 
 /**
  * 该函数用于处理neighbour结构不能删除的临时情况。因为有人仍要调用这个neighbour结构。

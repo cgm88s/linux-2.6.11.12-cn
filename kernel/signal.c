@@ -516,7 +516,7 @@ static inline int collect_signal(int sig, struct sigpending *list, siginfo_t *in
 		   a fast-pathed signal or we must have been
 		   out of queue space.  So zero out the info.
 		 */
-		sigdelset(&list->signal, sig);
+		sigdelset(&list->signal, sig);		//清除对应 位
 		info->si_signo = sig;
 		info->si_errno = 0;
 		info->si_code = 0;
@@ -531,7 +531,7 @@ static int __dequeue_signal(struct sigpending *pending, sigset_t *mask,
 {
 	int sig = 0;
 
-	sig = next_signal(pending, mask);
+	sig = next_signal(pending, mask);  //取pending中置1的位，表示该位的信号
 	if (sig) {
 		if (current->notifier) {
 			if (sigismember(current->notifier_mask, sig)) {

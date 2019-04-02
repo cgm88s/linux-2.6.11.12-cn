@@ -15,12 +15,12 @@
 int init_new_context(struct task_struct *tsk, struct mm_struct *mm);
 void destroy_context(struct mm_struct *mm);
 
-#ifdef CONFIG_SMP
+#ifdef 1//CONFIG_SMP
 
-static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)
+static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)  //ÉèÖÃ TLBµÄ×´Ì¬Îª TLBSTATE_LAZY=2
 {
-	if (read_pda(mmu_state) == TLBSTATE_OK) 
-		write_pda(mmu_state, TLBSTATE_LAZY);
+	if (read_pda(mmu_state) == TLBSTATE_OK) 	// 1
+		write_pda(mmu_state, TLBSTATE_LAZY);	// 2
 }
 #else
 static inline void enter_lazy_tlb(struct mm_struct *mm, struct task_struct *tsk)

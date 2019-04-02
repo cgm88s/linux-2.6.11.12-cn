@@ -66,7 +66,7 @@ static unsigned long cyc2ns_scale;
 
 static inline void set_cyc2ns_scale(unsigned long cpu_mhz)
 {
-	cyc2ns_scale = (1000 << CYC2NS_SCALE_FACTOR)/cpu_mhz;
+	cyc2ns_scale = (1000 << CYC2NS_SCALE_FACTOR)/cpu_mhz;   // (1000<<10)/cpu_mhz =  1024000/cpu_mhz, 每个CPU周期约为cyc2ns_scale 纳秒
 }
 
 static inline unsigned long long cycles_2_ns(unsigned long long cyc)

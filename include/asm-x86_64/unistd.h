@@ -11,13 +11,13 @@
  * Note: holes are not allowed.
  */
 
-/* at least 8 syscall per cacheline */
+/* at least 8 syscall per cacheline 初始化系统调用数组 sys_call_table */
 #define __NR_read                                0
-__SYSCALL(__NR_read, sys_read)
+__SYSCALL(__NR_read, sys_read)						//  __SYSCALL(nr, sym) [ nr ] = sym,    [0] = sys_read, 
 #define __NR_write                               1
-__SYSCALL(__NR_write, sys_write)
+__SYSCALL(__NR_write, sys_write)					//									[1] = sys_write,
 #define __NR_open                                2
-__SYSCALL(__NR_open, sys_open)
+__SYSCALL(__NR_open, sys_open)						//									[2] = sys_open
 #define __NR_close                               3
 __SYSCALL(__NR_close, sys_close)
 #define __NR_stat                                4

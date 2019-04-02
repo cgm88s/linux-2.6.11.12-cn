@@ -574,14 +574,14 @@ acpi_table_init (void)
 	int			result = 0;
 
 	/* Locate and map the Root System Description Table (RSDP) */
-
-	rsdp_phys = acpi_find_rsdp();
+ 
+	rsdp_phys = acpi_find_rsdp();   // 查找 RSDP 表 
 	if (!rsdp_phys) {
 		printk(KERN_ERR PREFIX "Unable to locate RSDP\n");
 		return -ENODEV;
 	}
 
-	rsdp = (struct acpi_table_rsdp *) __va(rsdp_phys);
+	rsdp = (struct acpi_table_rsdp *) __va(rsdp_phys);   // 得到 RSDP 表
 	if (!rsdp) {
 		printk(KERN_WARNING PREFIX "Unable to map RSDP\n");
 		return -ENODEV;

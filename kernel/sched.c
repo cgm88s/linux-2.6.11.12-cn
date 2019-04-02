@@ -65,7 +65,7 @@
  */
 #define USER_PRIO(p)		((p)-MAX_RT_PRIO)
 #define TASK_USER_PRIO(p)	USER_PRIO((p)->static_prio)
-#define MAX_USER_PRIO		(USER_PRIO(MAX_PRIO))
+#define MAX_USER_PRIO		(USER_PRIO(MAX_PRIO))	// 40
 
 /*
  * Some helpers for converting nanosecond timing to jiffy resolution
@@ -87,11 +87,11 @@
 #define PARENT_PENALTY		100
 #define EXIT_WEIGHT		  3
 #define PRIO_BONUS_RATIO	 25
-#define MAX_BONUS		(MAX_USER_PRIO * PRIO_BONUS_RATIO / 100)
+#define MAX_BONUS		(MAX_USER_PRIO * PRIO_BONUS_RATIO / 100)  // 40*25/100=10
 #define INTERACTIVE_DELTA	  2
-#define MAX_SLEEP_AVG		(DEF_TIMESLICE * MAX_BONUS)
+#define MAX_SLEEP_AVG		(DEF_TIMESLICE * MAX_BONUS)   // HZ
 #define STARVATION_LIMIT	(MAX_SLEEP_AVG)
-#define NS_MAX_SLEEP_AVG	(JIFFIES_TO_NS(MAX_SLEEP_AVG))
+#define NS_MAX_SLEEP_AVG	(JIFFIES_TO_NS(MAX_SLEEP_AVG))	 // 1000 000 000
 
 /*
  * If a task is 'interactive' then we reinsert it in the active
@@ -196,11 +196,11 @@ struct prio_array {
 	/**
 	 * 优先权数组。当且仅当某个优先权的进程链表不为空时设置相应的位标志。
 	 */
-	unsigned long bitmap[BITMAP_SIZE];
+	unsigned long bitmap[BITMAP_SIZE];   // 3
 	/**
 	 * 140个优先权队列的头结点。
 	 */
-	struct list_head queue[MAX_PRIO];
+	struct list_head queue[MAX_PRIO]; 	// 140
 };
 
 /*
@@ -354,7 +354,7 @@ struct runqueue {
 /**
  * 所有CPU的运行队列。
  */
-static DEFINE_PER_CPU(struct runqueue, runqueues);
+static DEFINE_PER_CPU(struct runqueue, runqueues); struct runqueue runqueues;
 
 #define for_each_domain(cpu, domain) \
 	for (domain = cpu_rq(cpu)->sd; domain; domain = domain->parent)
@@ -898,7 +898,7 @@ static void activate_task(task_t *p, runqueue_t *rq, int local)
 static void deactivate_task(struct task_struct *p, runqueue_t *rq)
 {
 	rq->nr_running--;
-	dequeue_task(p, p->array);
+	dequeue_task(p, p->array);		// 把 进程 p 从运行队列 p->array中移除
 	p->array = NULL;
 }
 
@@ -2816,7 +2816,7 @@ void account_steal_time(struct task_struct *p, cputime_t steal)
 void scheduler_tick(void)
 {
 	int cpu = smp_processor_id();
-	runqueue_t *rq = this_rq();
+	runqueue_t *rq = this_rq();   // struct runqueue runqueues
 	task_t *p = current;
 
 	/**
@@ -3207,7 +3207,7 @@ need_resched:
 	 */
 	release_kernel_lock(prev);
 need_resched_nonpreemptible:
-	rq = this_rq();
+	rq = this_rq();     // 取当前CPU上的运行队列 runqueues
 
 	/*
 	 * The idle thread is not allowed to schedule!
@@ -3218,11 +3218,11 @@ need_resched_nonpreemptible:
 		dump_stack();
 	}
 
-	schedstat_inc(rq, sched_cnt);
+	schedstat_inc(rq, sched_cnt);   // 调度计数加 1, rq->sched_cnt++
 	/**
 	 * 计算当前进程的运行时间。不超过1秒。
 	 */
-	now = sched_clock();
+	now = sched_clock(); //计算当前的时间
 	if (likely(now - prev->timestamp < NS_MAX_SLEEP_AVG))
 		run_time = now - prev->timestamp;
 	else
@@ -3334,12 +3334,12 @@ go_idle:
 	 * 现在开始在活动集合中搜索一个可运行的进程。
 	 * 首先搜索第一个非0位，并找到对应的链表。
 	 */
-	idx = sched_find_first_bit(array->bitmap);
-	queue = array->queue + idx;
+	idx = sched_find_first_bit(array->bitmap);    // 从位图中找到第1个置位的
+	queue = array->queue + idx;					 // 最到最高优先级的queue
 	/**
 	 * 将下一个可运行进程描述符放到next中
 	 */
-	next = list_entry(queue->next, task_t, run_list);
+	next = list_entry(queue->next, task_t, run_list);			// 从最高优先级的queue中取第一个进程
 
 	/**
 	 * 如果进程是一个普通进程，并且是从TASK_INTERRUPTIBLE或者TASK_STOPPED状态被唤醒。
@@ -4545,7 +4545,7 @@ EXPORT_SYMBOL(io_schedule);
 
 long __sched io_schedule_timeout(long timeout)
 {
-	struct runqueue *rq = &per_cpu(runqueues, _smp_processor_id());
+	struct runqueue *rq = &per_cpu(runqueues, _smp_processor_id());			MAX_SCHEDULE_TIMEOUT
 	long ret;
 
 	atomic_inc(&rq->nr_iowait);

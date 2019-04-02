@@ -25,11 +25,11 @@
 /*
  * This controls the default maximum pid allocated to a process
  */
-#define PID_MAX_DEFAULT 0x8000
+#define PID_MAX_DEFAULT 0x8000		//进程 数量 0x8000= 32768
 
 /*
  * A maximum of 4 million PIDs should be enough for a while:
  */
-#define PID_MAX_LIMIT (sizeof(long) > 4 ? 4*1024*1024 : PID_MAX_DEFAULT)
+#define PID_MAX_LIMIT (sizeof(long) > 4 ? 4*1024*1024 : PID_MAX_DEFAULT)	// 0x400000 : 0x8000
 
 #endif

@@ -19,8 +19,8 @@ typedef void (*sys_call_ptr_t)(void);
 
 extern void sys_ni_syscall(void);
 
-sys_call_ptr_t sys_call_table[__NR_syscall_max+1] __cacheline_aligned = { 
+sys_call_ptr_t sys_call_table[__NR_syscall_max+1] /*__cacheline_aligned */= {     //系统调用 表
 	/* Smells like a like a compiler bug -- it doesn't work when the & below is removed. */ 
-	[0 ... __NR_syscall_max] = &sys_ni_syscall,
-#include <asm-x86_64/unistd.h>
+	[0 ... __NR_syscall_max] = &sys_ni_syscall,  //  -ENOSYS, 先把所有的系统调用清空
+#include <asm-x86_64/unistd.h>  // __SYSCALL(__NR_read, sys_read)   -->   [0] = sys_read   初始化系统调用数组
 };

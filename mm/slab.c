@@ -286,13 +286,14 @@ struct array_cache {
 	 */
 	unsigned int limit;
 	/**
-	 * 本地高速缓存重新填充或者腾空时使用的块大小
+	 * 本地高速缓存重新填充或者释放时使用的块大小(批处理个数)
 	 */
 	unsigned int batchcount;
 	/**
 	 * 如果最近被使用过，则置为1
 	 */
 	unsigned int touched;
+	 //新版本中这里有成员 void *entry[]; 指向本地高速缓存空闭对象
 };
 
 /* bootstrap: The caches do not work without cpuarrays anymore,
@@ -1398,7 +1399,7 @@ kmem_cache_create (const char *name, size_t size, size_t align,
 			BUG();
 		}
 
-#if DEBUG
+#if 0 //DEBUG
 	WARN_ON(strchr(name, ' '));	/* It confuses parsers */
 	if ((flags & SLAB_DEBUG_INITIAL) && !ctor) {
 		/* No constructor, but inital state check requested */
@@ -1407,7 +1408,7 @@ kmem_cache_create (const char *name, size_t size, size_t align,
 		flags &= ~SLAB_DEBUG_INITIAL;
 	}
 
-#if FORCED_DEBUG
+#if 0 // FORCED_DEBUG
 	/*
 	 * Enable redzoning and last user accounting, except for caches with
 	 * large objects, if the increased size would increase the object size
@@ -1491,7 +1492,7 @@ kmem_cache_create (const char *name, size_t size, size_t align,
 		goto opps;
 	memset(cachep, 0, sizeof(kmem_cache_t));
 
-#if DEBUG
+#if 0// DEBUG
 	cachep->reallen = size;
 
 	if (flags & SLAB_RED_ZONE) {
@@ -2580,7 +2581,7 @@ static void free_block(kmem_cache_t *cachep, void **objpp, int nr_objects)
 
 
 /**
- * 清空本地高速缓存
+ * 清空本地高速缓存，把cachep->array[]存入到slab的三链中
  */
 static void cache_flusharray (kmem_cache_t* cachep, struct array_cache *ac)
 {
@@ -2669,7 +2670,7 @@ free_done:
  */
 static inline void __cache_free (kmem_cache_t *cachep, void* objp)
 {
-	struct array_cache *ac = ac_data(cachep);
+	struct array_cache *ac = ac_data(cachep);  // cachep->array[cpu]
 
 	check_irq_off();
 	objp = cache_free_debugcheck(cachep, objp, __builtin_return_address(0));
@@ -2687,7 +2688,7 @@ static inline void __cache_free (kmem_cache_t *cachep, void* objp)
 	} else {
 		STATS_INC_FREEMISS(cachep);
 		/**
-		 * 调用cache_flusharray，清空本地高速缓存
+		 * 调用cache_flusharray，清空本地高速缓存, 把cachep->array[]存入到slab三链中
 		 */
 		cache_flusharray(cachep, ac);
 		/**

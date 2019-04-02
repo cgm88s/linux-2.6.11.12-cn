@@ -295,7 +295,7 @@ __asm__(".section .text\n"
  * Create a kernel thread
  */
 /**
- * 创建一个新的内核线程
+ * 创建一个新的内核线程 do_fork
  * fn-要执行的内核函数的地址。
  * arg-要传递给函数的参数
  * flags-一组clone标志

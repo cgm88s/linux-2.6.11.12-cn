@@ -2385,9 +2385,9 @@ generic_file_buffered_write(struct kiocb *iocb, const struct iovec *iov,
 		unsigned long offset;
 		size_t copied;
 
-		offset = (pos & (PAGE_CACHE_SIZE -1)); /* Within page */
-		index = pos >> PAGE_CACHE_SHIFT;
-		bytes = PAGE_CACHE_SIZE - offset;
+		offset = (pos & (PAGE_CACHE_SIZE -1)); /* Within page  page内的偏移*/
+		index = pos >> PAGE_CACHE_SHIFT;     // 把 pos转换成 文件内 page索引
+		bytes = PAGE_CACHE_SIZE - offset;	//首个page中的可写大小
 		if (bytes > count)
 			bytes = count;
 
@@ -2412,7 +2412,7 @@ generic_file_buffered_write(struct kiocb *iocb, const struct iovec *iov,
 		/**
 		 * 调用索引节点的prepare_write。对应的函数会为该页分配和初始化缓冲区首部。
 		 */
-		status = a_ops->prepare_write(file, page, offset, offset+bytes);  ext3_ordered_aops
+		status = a_ops->prepare_write(file, page, offset, offset+bytes);  ext3_ordered_aops.prepare_write=ext3_prepare_write
 		if (unlikely(status)) {
 			loff_t isize = i_size_read(inode);
 			/*
@@ -2438,7 +2438,7 @@ generic_file_buffered_write(struct kiocb *iocb, const struct iovec *iov,
 		/**
 		 * commit_write方法将缓冲区标记为脏，以便随后将它们写回磁盘。
 		 */
-		status = a_ops->commit_write(file, page, offset, offset+bytes);
+		status = a_ops->commit_write(file, page, offset, offset+bytes); ext3_ordered_aops.commit_write=ext3_ordered_commit_write
 		if (likely(copied > 0)) {
 			if (!status)
 				status = copied;
@@ -2833,7 +2833,7 @@ generic_file_direct_IO(int rw, struct kiocb *iocb, const struct iovec *iov,
 		 * 调用mapping地址空间的direct_io方法。
 		 */
 		retval = mapping->a_ops->direct_IO(rw, iocb, iov,
-						offset, nr_segs);
+						offset, nr_segs);    ext3_direct_IO
 		/**
 		 * 如果操作类型是write，则调用invalidate_inode_pages2扫描mapping基树中所有页并释放它们。
 		 * 同时也清空指向这些页的用户态页表项。

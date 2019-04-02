@@ -387,7 +387,7 @@ static void __init contig_initmem_init(void)
         bootmap = find_e820_area(0, end_pfn<<PAGE_SHIFT, bootmap_size);
         if (bootmap == -1L) 
                 panic("Cannot find bootmem map of size %ld\n",bootmap_size);
-        bootmap_size = init_bootmem(bootmap >> PAGE_SHIFT, end_pfn);
+        bootmap_size = init_bootmem(bootmap >> PAGE_SHIFT, end_pfn);		//初始化bootmem
         e820_bootmem_free(&contig_page_data, 0, end_pfn << PAGE_SHIFT); 
         reserve_bootmem(bootmap, bootmap_size);
 } 
@@ -514,7 +514,7 @@ void __init setup_arch(char **cmdline_p)
 	rd_prompt = ((RAMDISK_FLAGS & RAMDISK_PROMPT_FLAG) != 0);
 	rd_doload = ((RAMDISK_FLAGS & RAMDISK_LOAD_FLAG) != 0);
 #endif
-	setup_memory_region(); // 通过BIOS的0x15号中断，执行0xe820函数代码，获取内存的映射信息
+	setup_memory_region(); // 通过BIOS的0x15号中断，执行0xe820函数代码，获取内存的映射信息  e820 ,打印 e820内存信息
 	copy_edd(); //拷贝BIOS EDD信息 从boot_params到一个安全位置
 
 	if (!MOUNT_ROOT_RDONLY)
@@ -537,7 +537,7 @@ void __init setup_arch(char **cmdline_p)
 	 * partially used pages are not usable - thus
 	 * we are rounding upwards:
 	 */
-	end_pfn = e820_end_of_ram();
+	end_pfn = e820_end_of_ram();   // 计算可用最大页框号  end_pfn_map
 
 	check_efer();
 
@@ -548,7 +548,7 @@ void __init setup_arch(char **cmdline_p)
 	 * Initialize the ACPI boot-time table parser (gets the RSDP and SDT).
 	 * Call this early for SRAT node setup.
 	 */
-	acpi_boot_table_init();
+	acpi_boot_table_init();    // ACPI 根表 rsdp 初始化
 #endif
 
 #ifdef CONFIG_ACPI_NUMA
@@ -561,7 +561,7 @@ void __init setup_arch(char **cmdline_p)
 #ifdef CONFIG_DISCONTIGMEM
 	numa_initmem_init(0, end_pfn); 
 #else
-	contig_initmem_init(); 
+	contig_initmem_init(); 		//bootmem初始化
 #endif
 
 	/* Reserve direct mapping */
@@ -622,7 +622,7 @@ void __init setup_arch(char **cmdline_p)
 		}
 	}
 #endif
-	paging_init();
+	paging_init();			//初始化内存分页
 
 	check_ioapic();
 

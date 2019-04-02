@@ -64,7 +64,7 @@ r_base = .
 	inc	%ax		# protected mode (PE) bit
 	lmsw	%ax		# into protected mode
 	# flush prefetch and jump to startup_32_smp in arch/i386/kernel/head.S
-	ljmpl	$__BOOT_CS, $(startup_32_smp-__PAGE_OFFSET)
+	ljmpl	$__BOOT_CS, $(startup_32_smp-__PAGE_OFFSET)    //长跳转，直接跳转到head.S
 
 	# These need to be in the same 64K segment as the above;
 	# hence we don't use the boot_gdt_descr defined in head.S

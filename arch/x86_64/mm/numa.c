@@ -22,7 +22,7 @@
 #define Dprintk(x...)
 #endif
 
-struct pglist_data *node_data[MAX_NUMNODES];
+struct pglist_data *node_data[MAX_NUMNODES];	// node_data[64]
 bootmem_data_t plat_node_bdata[MAX_NUMNODES];
 
 int memnode_shift;

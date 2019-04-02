@@ -481,8 +481,8 @@ asmlinkage void __init start_kernel(void)
 	}
 #endif
 	vfs_caches_init_early();
-	mem_init();
-	kmem_cache_init();
+	mem_init();		//建立了内核的内存分配器,  从 bootmem 过渡到 buddy伙伴
+	kmem_cache_init();	//建立slab缓存分配器
 	numa_policy_init();
 	if (late_time_init)
 		late_time_init();
@@ -510,7 +510,7 @@ asmlinkage void __init start_kernel(void)
 #endif
 	check_bugs();
 
-	acpi_early_init(); /* before LAPIC and SMP init */
+	acpi_early_init(); /* before LAPIC and SMP init .ACPI子系统初始化*/
 
 	/* Do the rest non-__init'ed, we're now alive */
 	/**
@@ -643,7 +643,7 @@ static int init(void * unused)
 	child_reaper = current;
 
 	/* Sets up cpus_possible() */
-	smp_prepare_cpus(max_cpus);	//准备启动多核CPU，SMP
+	smp_prepare_cpus(max_cpus);	//准备启动多核CPU，SMP   smp_boot_cpus
 
 	do_pre_smp_initcalls();
 

@@ -221,10 +221,10 @@ static inline int ip_finish_output2(struct sk_buff *skb)
 		 */
   		memcpy(skb->data - hh_alen, hh->hh_data, hh_alen);
 		read_unlock_bh(&hh->hh_lock);
-	        skb_push(skb, hh->hh_len);
-		return hh->hh_output(skb);
+	        skb_push(skb, hh->hh_len);	
+		return hh->hh_output(skb);					dev_queue_xmit
 	} else if (dst->neighbour)/* 缓存的L2帧头是无效的 */
-		return dst->neighbour->output(skb);/* 调用neigh->output方法，这可能将包放到缓存队列中延后发送。 */
+		return dst->neighbour->output(skb);/* 调用neigh->output方法，这可能将包放到缓存队列中延后发送。 */   neigh_resolve_output
 
 	if (net_ratelimit())
 		printk(KERN_DEBUG "ip_finish_output2: No header cache and no neighbour!\n");

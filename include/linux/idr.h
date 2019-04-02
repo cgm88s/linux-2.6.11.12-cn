@@ -29,30 +29,30 @@
 # error "BITS_PER_LONG is not 32 or 64"
 #endif
 
-#define IDR_SIZE (1 << IDR_BITS)
-#define IDR_MASK ((1 << IDR_BITS)-1)
+#define IDR_SIZE (1 << IDR_BITS)    // 32位时为 (1<<5)= 32   64位时为 (1<<6)=64
+#define IDR_MASK ((1 << IDR_BITS)-1)	//32位为 0x1f : 0b1 1111,    64位为 0x3f : 0b 11 1111
 
-#define MAX_ID_SHIFT (sizeof(int)*8 - 1)
-#define MAX_ID_BIT (1U << MAX_ID_SHIFT)
-#define MAX_ID_MASK (MAX_ID_BIT - 1)
+#define MAX_ID_SHIFT (sizeof(int)*8 - 1)	// 4*8-1 = 31
+#define MAX_ID_BIT (1U << MAX_ID_SHIFT)    //  1 << 31
+#define MAX_ID_MASK (MAX_ID_BIT - 1)		// (1<<31) -1
 
 /* Leave the possibility of an incomplete final layer */
-#define MAX_LEVEL (MAX_ID_SHIFT + IDR_BITS - 1) / IDR_BITS
+#define MAX_LEVEL (MAX_ID_SHIFT + IDR_BITS - 1) / IDR_BITS		// 32位时为 (31+5-1)/5= 7, 64位时为 (31+6-1)/6=6
 
 /* Number of id_layer structs to leave in free list */
-#define IDR_FREE_MAX MAX_LEVEL + MAX_LEVEL
+#define IDR_FREE_MAX MAX_LEVEL + MAX_LEVEL			//32位时为 14，64位时为 12
 
 struct idr_layer {
 	unsigned long		 bitmap; /* A zero bit means "space here" */
-	struct idr_layer	*ary[1<<IDR_BITS];
+	struct idr_layer	*ary[1<<IDR_BITS];			// 32，或 64
 	int			 count;	 /* When zero, we can release it */
 };
 
 struct idr {
-	struct idr_layer *top;
-	struct idr_layer *id_free;
-	int		  layers;
-	int		  id_free_cnt;
+	struct idr_layer *top;	//使用中的 idr_layer
+	struct idr_layer *id_free;	// 空闲的 idr_layer
+	int		  layers;	// idr 的层次
+	int		  id_free_cnt;	// 空闲的idr 数量
 	spinlock_t	  lock;
 };
 

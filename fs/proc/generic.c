@@ -359,7 +359,7 @@ static struct dentry_operations proc_dentry_operations =
 /*
  * Don't create negative dentries here, return -ENOENT by hand
  * instead.
- */
+ */ // 查找 /proc 目录下的文件与目录， 不包括进程相关的目录
 struct dentry *proc_lookup(struct inode * dir, struct dentry *dentry, struct nameidata *nd)
 {
 	struct inode *inode = NULL;
@@ -367,16 +367,16 @@ struct dentry *proc_lookup(struct inode * dir, struct dentry *dentry, struct nam
 	int error = -ENOENT;
 
 	lock_kernel();
-	de = PDE(dir);
+	de = PDE(dir);   proc_root  // /proc根节点
 	if (de) {
-		for (de = de->subdir; de ; de = de->next) {
+		for (de = de->subdir; de ; de = de->next) {  //  /proc目录下的静态文件， 不包括进程相关的目录
 			if (de->namelen != dentry->d_name.len)
 				continue;
 			if (!memcmp(dentry->d_name.name, de->name, de->namelen)) {
-				unsigned int ino = de->low_ino;
+				unsigned int ino = de->low_ino;  // inode号
 
 				error = -EINVAL;
-				inode = proc_get_inode(dir->i_sb, ino, de);
+				inode = proc_get_inode(dir->i_sb, ino, de); //查找或分配 inode
 				break;
 			}
 		}
@@ -385,7 +385,7 @@ struct dentry *proc_lookup(struct inode * dir, struct dentry *dentry, struct nam
 
 	if (inode) {
 		dentry->d_op = &proc_dentry_operations;
-		d_add(dentry, inode);
+		d_add(dentry, inode);   // 把 dentry 与 找到的 inode 关联
 		return NULL;
 	}
 	return ERR_PTR(error);

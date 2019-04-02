@@ -34,7 +34,7 @@
 
 static kmem_cache_t *idr_layer_cache;
 
-static struct idr_layer *alloc_layer(struct idr *idp)
+static struct idr_layer *alloc_layer(struct idr *idp)		//从 idr->id_free链表中 取一个 idr_layer
 {
 	struct idr_layer *p;
 
@@ -48,7 +48,7 @@ static struct idr_layer *alloc_layer(struct idr *idp)
 	return(p);
 }
 
-static void free_layer(struct idr *idp, struct idr_layer *p)
+static void free_layer(struct idr *idp, struct idr_layer *p) // 把 一个 idr_layer加入到 idr->id_free链表
 {
 	/*
 	 * Depends on the return element being zeroed.
@@ -72,20 +72,20 @@ static void free_layer(struct idr *idp, struct idr_layer *p)
  * If the system is REALLY out of memory this function returns 0,
  * otherwise 1.
  */
-int idr_pre_get(struct idr *idp, unsigned gfp_mask)
+int idr_pre_get(struct idr *idp, unsigned gfp_mask) //给idr 增加一个idr_layer, 
 {
-	while (idp->id_free_cnt < IDR_FREE_MAX) {
+	while (idp->id_free_cnt < IDR_FREE_MAX) {  // 32位为 14, 64位为 12
 		struct idr_layer *new;
 		new = kmem_cache_alloc(idr_layer_cache, gfp_mask);
 		if(new == NULL)
 			return (0);
-		free_layer(idp, new);
+		free_layer(idp, new);  //把新分配的idr_layer 加入到 idr->id_free 链表
 	}
 	return 1;
 }
 EXPORT_SYMBOL(idr_pre_get);
 
-static int sub_alloc(struct idr *idp, void *ptr, int *starting_id)
+static int sub_alloc(struct idr *idp, void *ptr, int *starting_id) // 分配一个idr_layer->ary[x] = ptr, 返回它对应的id
 {
 	int n, m, sh;
 	struct idr_layer *p, *new;
@@ -94,9 +94,9 @@ static int sub_alloc(struct idr *idp, void *ptr, int *starting_id)
 	long bm;
 
 	id = *starting_id;
-	p = idp->top;
-	l = idp->layers;
-	pa[l--] = NULL;
+	p = idp->top;		//使用中的根idr_layer
+	l = idp->layers;	// 当前层数
+	pa[l--] = NULL;  // pa[l]=NULL,   l--, 下一层
 	while (1) {
 		/*
 		 * We run around this while until we reach the leaf node...
@@ -164,9 +164,9 @@ static int idr_get_new_above_int(struct idr *idp, void *ptr, int starting_id)
 	
 	id = starting_id;
 build_up:
-	p = idp->top;
+	p = idp->top;	
 	layers = idp->layers;
-	if (unlikely(!p)) {
+	if (unlikely(!p)) {		//如果没有使用中的idr_layer,则从 空闲 idr->id_free链表中 取一个 idr_layer
 		if (!(p = alloc_layer(idp)))
 			return -1;
 		layers = 1;
@@ -401,8 +401,8 @@ static  int init_id_cache(void)
  */
 void idr_init(struct idr *idp)
 {
-	init_id_cache();
-	memset(idp, 0, sizeof(struct idr));
+	init_id_cache();	//初始化 struct idr_layer 对象缓存
+	memset(idp, 0, sizeof(struct idr));	 
 	spin_lock_init(&idp->lock);
 }
 EXPORT_SYMBOL(idr_init);

@@ -273,7 +273,7 @@ static void nfs_direct_read_schedule(struct nfs_direct_req *dreq,
 		data->complete = nfs_direct_read_result;
 
 		lock_kernel();
-		rpc_execute(&data->task);
+		rpc_execute(&data->task);   //Ö´ĞĞ rpc ÈÎÎñ
 		unlock_kernel();
 
 		dfprintk(VFS, "NFS: %4d initiated direct read call (req %s/%Ld, %u bytes @ offset %Lu)\n",

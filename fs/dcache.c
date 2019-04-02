@@ -772,7 +772,7 @@ static int shrink_dcache_memory(int nr, unsigned int gfp_mask)
  * available. On a success the dentry is returned. The name passed in is
  * copied and the copy passed in may be reused after this call.
  */
- 
+ //分配一个dentry， 并初始化
 struct dentry *d_alloc(struct dentry * parent, const struct qstr *name)
 {
 	struct dentry *dentry;
@@ -1102,13 +1102,13 @@ struct dentry * d_lookup(struct dentry * parent, struct qstr * name)
 	} while (read_seqretry(&rename_lock, seq));
 	return dentry;
 }
-
+//从dentry_hashtable 哈希缓存链表中，找到 指定名为name 的dentry
 struct dentry * __d_lookup(struct dentry * parent, struct qstr * name)
 {
 	unsigned int len = name->len;
 	unsigned int hash = name->hash;
 	const unsigned char *str = name->name;
-	struct hlist_head *head = d_hash(parent,hash);
+	struct hlist_head *head = d_hash(parent,hash);   //  dentry_hashtable 哈希链表头
 	struct dentry *found = NULL;
 	struct hlist_node *node;
 

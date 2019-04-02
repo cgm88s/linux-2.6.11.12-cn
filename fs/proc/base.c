@@ -1680,19 +1680,19 @@ struct dentry *proc_pid_lookup(struct inode *dir, struct dentry * dentry, struct
 		d_add(dentry, inode);
 		return NULL;
 	}
-	tgid = name_to_int(dentry);
+	tgid = name_to_int(dentry);  // 路径名，换成 pid,
 	if (tgid == ~0U)
 		goto out;
 
 	read_lock(&tasklist_lock);
-	task = find_task_by_pid(tgid);
+	task = find_task_by_pid(tgid);  //通过 pid 找到 task_struct
 	if (task)
-		get_task_struct(task);
+		get_task_struct(task);    //  task->usage +1
 	read_unlock(&tasklist_lock);
 	if (!task)
 		goto out;
 
-	inode = proc_pid_make_inode(dir->i_sb, task, PROC_TGID_INO);
+	inode = proc_pid_make_inode(dir->i_sb, task, PROC_TGID_INO); // 创建一个inode
 
 
 	if (!inode) {

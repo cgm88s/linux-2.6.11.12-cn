@@ -172,7 +172,7 @@ void __iomem *ioport_map(unsigned long port, unsigned int nr)
 {
 	if (port > PIO_MASK)
 		return NULL;
-	return (void __iomem *) (unsigned long) (port + PIO_OFFSET);
+	return (void __iomem *) (unsigned long) (port + PIO_OFFSET);   0x10000=64K
 }
 
 void ioport_unmap(void __iomem *addr)

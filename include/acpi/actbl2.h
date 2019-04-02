@@ -125,7 +125,7 @@ struct acpi_generic_address
 	u32                             V1_dsdt;            /* 32-bit physical address of DSDT */ \
 	u8                              reserved1;          /* System Interrupt Model isn't used in ACPI 2.0*/ \
 	u8                              prefer_PM_profile;  /* Conveys preferred power management profile to OSPM. */ \
-	u16                             sci_int;            /* System vector of SCI interrupt */ \
+	u16                             sci_int;            /*SCI中断向量 System vector of SCI interrupt */ \
 	u32                             smi_cmd;            /* Port address of SMI command port */ \
 	u8                              acpi_enable;        /* Value to write to smi_cmd to enable ACPI */ \
 	u8                              acpi_disable;       /* Value to write to smi_cmd to disable ACPI */ \
@@ -143,9 +143,9 @@ struct acpi_generic_address
 	u8                              pm1_cnt_len;        /* Byte length of ports at pm1_x_cnt_blk */ \
 	u8                              pm2_cnt_len;        /* Byte Length of ports at pm2_cnt_blk */ \
 	u8                              pm_tm_len;          /* Byte Length of ports at pm_tm_blk */ \
-	u8                              gpe0_blk_len;       /* Byte Length of ports at gpe0_blk */ \
-	u8                              gpe1_blk_len;       /* Byte Length of ports at gpe1_blk */ \
-	u8                              gpe1_base;          /* Offset in gpe model where gpe1 events start */ \
+	u8                              gpe0_blk_len;       /*事情寄存器0的长度 Byte Length of ports at gpe0_blk */ \
+	u8                              gpe1_blk_len;       /*事情寄存器1的长度 Byte Length of ports at gpe1_blk */ \
+	u8                              gpe1_base;          /*事情寄存器0,1的基地址 Offset in gpe model where gpe1 events start */ \
 	u8                              cst_cnt;            /* Support for the _CST object and C States change notification.*/ \
 	u16                             plvl2_lat;          /* Worst case HW latency to enter/exit C2 state */ \
 	u16                             plvl3_lat;          /* Worst case HW latency to enter/exit C3 state */ \
@@ -194,8 +194,8 @@ struct fadt_descriptor_rev2
 	struct acpi_generic_address     xpm1b_cnt_blk;      /* Extended Power Mgt 1b Control Reg Blk address */
 	struct acpi_generic_address     xpm2_cnt_blk;       /* Extended Power Mgt 2 Control Reg Blk address */
 	struct acpi_generic_address     xpm_tmr_blk;        /* Extended Power Mgt Timer Ctrl Reg Blk address */
-	struct acpi_generic_address     xgpe0_blk;          /* Extended General Purpose acpi_event 0 Reg Blk address */
-	struct acpi_generic_address     xgpe1_blk;          /* Extended General Purpose acpi_event 1 Reg Blk address */
+	struct acpi_generic_address     xgpe0_blk;          /* 事情寄存器0的地址 Extended General Purpose acpi_event 0 Reg Blk address */
+	struct acpi_generic_address     xgpe1_blk;          /* 事情寄存器1的地址 Extended General Purpose acpi_event 1 Reg Blk address */
 };
 
 

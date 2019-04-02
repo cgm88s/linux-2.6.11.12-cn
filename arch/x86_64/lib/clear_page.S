@@ -41,10 +41,10 @@ clear_page_end:
 
 	.section .altinstr_replacement,"ax"
 clear_page_c:
-	movl $4096/8,%ecx
+	movl $4096/8,%ecx			// ECX为 rep 指令的 计数寄存器，   512=0x200=4096/8
 	xorl %eax,%eax
 	rep 
-	stosq
+	stosq			// 每次写 8 个byte, 从 RAX 拷贝到 ES:EDI
 	ret
 clear_page_c_end:
 	.previous

@@ -237,12 +237,12 @@ enum
 
 enum rt_scope_t
 {
-	RT_SCOPE_UNIVERSE=0,
+	RT_SCOPE_UNIVERSE=0,		// 表示路由目的为其他非直连网络, 也就是需要至少一个下一条网关
 /* User defined values  */
 	RT_SCOPE_SITE=200,
-	RT_SCOPE_LINK=253,
-	RT_SCOPE_HOST=254,
-	RT_SCOPE_NOWHERE=255
+	RT_SCOPE_LINK=253,			// 表示路由目的为本地网络
+	RT_SCOPE_HOST=254,			// 表示该路由目的为本机接口, 此类型路由为 fib_add_ifaddr 自动添加
+	RT_SCOPE_NOWHERE=255		// 表示该路由无法到达任意主机, 也就是说到该目的地址没有路由
 };
 
 /* rtm_flags */

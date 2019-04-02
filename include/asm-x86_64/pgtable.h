@@ -105,18 +105,18 @@ extern inline void pgd_clear (pgd_t * pgd)
 #define ptep_get_and_clear(xp)	__pte(xchg(&(xp)->pte, 0))
 #define pte_same(a, b)		((a).pte == (b).pte)
 
-#define PMD_SIZE	(1UL << PMD_SHIFT)
-#define PMD_MASK	(~(PMD_SIZE-1))
-#define PUD_SIZE	(1UL << PUD_SHIFT)
-#define PUD_MASK	(~(PUD_SIZE-1))
-#define PGDIR_SIZE	(1UL << PGDIR_SHIFT)
-#define PGDIR_MASK	(~(PGDIR_SIZE-1))
+#define PMD_SIZE	(1UL << PMD_SHIFT)		 // 1<<21
+#define PMD_MASK	(~(PMD_SIZE-1))			// 后21位为0	
+#define PUD_SIZE	(1UL << PUD_SHIFT)		// 1<<30
+#define PUD_MASK	(~(PUD_SIZE-1))			// 后30位为0
+#define PGDIR_SIZE	(1UL << PGDIR_SHIFT)	// 1 <<39
+#define PGDIR_MASK	(~(PGDIR_SIZE-1))		//后39位为0
 
-#define USER_PTRS_PER_PGD	(TASK_SIZE/PGDIR_SIZE)
+#define USER_PTRS_PER_PGD	(TASK_SIZE/PGDIR_SIZE)  // 0x8000 0000 0000 / 0x80 0000 0000 =  256
 #define FIRST_USER_PGD_NR	0
 
 #ifndef __ASSEMBLY__
-#define MAXMEM		 0x3fffffffffffUL
+#define MAXMEM		 0x3fffffffffffUL			 //(64T-1)
 #define VMALLOC_START    0xffffc20000000000UL
 #define VMALLOC_END      0xffffe1ffffffffffUL
 #define MODULES_VADDR    0xffffffff88000000UL

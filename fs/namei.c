@@ -419,7 +419,7 @@ static struct dentry * real_lookup(struct dentry * parent, struct qstr * name, s
 		result = ERR_PTR(-ENOMEM);
 		if (dentry) {
 			/* 从磁盘中读取目录项缓存 */
-			result = dir->i_op->lookup(dir, dentry, nd);
+			result = dir->i_op->lookup(dir, dentry, nd);   proc_root_inode_operations   proc_root_lookup
 			if (result)
 				dput(dentry);
 			else
@@ -739,7 +739,7 @@ static int do_lookup(struct nameidata *nd, struct qstr *name,
 	/**
 	 * __d_lookup在目录项高速缓存中搜索分量的目录项对象.
 	 */
-	struct dentry *dentry = __d_lookup(nd->dentry, name);
+	struct dentry *dentry = __d_lookup(nd->dentry, name);  //从dentry_hashtable 哈希缓存链表中，找到 指定名为name 的dentry
 
 	/* 在目录项缓存中没有找到，则需要从磁盘上读取目录项后查找 */
 	if (!dentry)
@@ -1557,7 +1557,7 @@ int may_open(struct nameidata *nd, int acc_mode, int flag)
  * which is a lot more logical, and also allows the "no perm" needed
  * for symlinks (where the permissions are checked later).
  * SMP-safe
- */
+ */ // 文件打开操作， 从 路径名 pathname, 遍历得到最后一个 路径名 存在 nd中 
 int open_namei(const char * pathname, int flag, int mode, struct nameidata *nd)
 {
 	int acc_mode, error = 0;

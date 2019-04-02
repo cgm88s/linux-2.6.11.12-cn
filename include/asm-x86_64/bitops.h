@@ -25,8 +25,8 @@
  * Note that @nr may be almost arbitrarily large; this function is not
  * restricted to acting on a single-word quantity.
  */
-static __inline__ void set_bit(int nr, volatile void * addr)
-{
+static __inline__ void set_bit(int nr, volatile void * addr)   // btsl %nr, %addr  对addr的第 nr位置1
+{		
 	__asm__ __volatile__( LOCK_PREFIX
 		"btsl %1,%0"
 		:"=m" (ADDR)
@@ -231,7 +231,7 @@ static __inline__ int test_and_change_bit(int nr, volatile void * addr)
 static int test_bit(int nr, const volatile void * addr);
 #endif
 
-static __inline__ int constant_test_bit(int nr, const volatile void * addr)
+static __inline__ int constant_test_bit(int nr, const volatile void * addr)  // 测试addr指同内存的第nr位，
 {
 	return ((1UL << (nr & 31)) & (((const volatile unsigned int *) addr)[nr >> 5])) != 0;
 }
@@ -239,16 +239,16 @@ static __inline__ int constant_test_bit(int nr, const volatile void * addr)
 static __inline__ int variable_test_bit(int nr, volatile const void * addr)
 {
 	int oldbit;
-
+	// btl %nr,%addr    sbbl %oldbit,%oldbit
 	__asm__ __volatile__(
 		"btl %2,%1\n\tsbbl %0,%0"
 		:"=r" (oldbit)
 		:"m" (ADDR),"dIr" (nr));
 	return oldbit;
 }
-
+// __builtin_constant_p 为gcc内建函数，用来判断参数是否为编译时常数，是常数返回1，否则返回0
 #define test_bit(nr,addr) \
-(__builtin_constant_p(nr) ? \
+(__builtin_constant_p(nr) ? \        
  constant_test_bit((nr),(addr)) : \
  variable_test_bit((nr),(addr)))
 
@@ -322,7 +322,7 @@ static __inline__ unsigned long ffz(unsigned long word)
 {
 	__asm__("bsfq %1,%0"
 		:"=r" (word)
-		:"r" (~word));
+		:"r" (~word));		// bsfq 指令返回第1上为1的位，此处是 ~word,所以找到的是后面有多少个0
 	return word;
 }
 

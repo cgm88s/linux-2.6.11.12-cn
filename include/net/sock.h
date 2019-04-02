@@ -206,11 +206,11 @@ struct sock {
 	 */
 	struct sock_common	__sk_common;
 #define sk_family		__sk_common.skc_family
-#define sk_state		__sk_common.skc_state
+#define sk_state		__sk_common.skc_state     //socket的状态 TCP_CLOSE
 #define sk_reuse		__sk_common.skc_reuse
 #define sk_bound_dev_if		__sk_common.skc_bound_dev_if
-#define sk_node			__sk_common.skc_node
-#define sk_bind_node		__sk_common.skc_bind_node
+#define sk_node			__sk_common.skc_node		// struct hlist_node skc_node
+#define sk_bind_node		__sk_common.skc_bind_node // struct hlist_node skc_bind_node
 #define sk_refcnt		__sk_common.skc_refcnt
 	volatile unsigned char	sk_zapped;
 	/* 关闭套接口的标志，是仅仅关闭读写还是读写全关闭，如RCV_SHUTDOWN */
@@ -229,7 +229,7 @@ struct sock {
 	 */
 	socket_lock_t		sk_lock;
 	/* 接收缓冲区大小的上限 */
-	int			sk_rcvbuf;
+	int			sk_rcvbuf;				// sysctl_rmem_default	  默认值	
 	/**
 	 * 等待队列。等待连接、等待输出缓冲区、等待读数据的线程都会暂存在此队列中。
 	 */
@@ -282,7 +282,7 @@ struct sock {
 	/**
 	 * 发送缓冲区长度上限。发送队列中报文数据总长度不能超过此值。
 	 */
-	int			sk_sndbuf;
+	int			sk_sndbuf;							// sysctl_wmem_default	  默认值							
 	/**
 	 * 一些状态和标志。如SOCK_DEAD
 	 */
@@ -1144,7 +1144,7 @@ static inline void sock_put(struct sock *sk)
  * probably wants some additional cleanups or even continuing
  * to work with this socket (TCP).
  */
-static inline void sock_orphan(struct sock *sk)
+static inline void sock_orphan(struct sock *sk) //设置 sock为 孤儿状态，从进程上下文中移除
 {
 	write_lock_bh(&sk->sk_callback_lock);
 	sock_set_flag(sk, SOCK_DEAD);

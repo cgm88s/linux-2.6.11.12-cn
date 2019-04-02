@@ -61,7 +61,7 @@ struct dst_entry
 	/**
 	 * Egress设备（即将报文送达目的地的发送设备）。
 	 */
-	struct net_device       *dev;
+	struct net_device       *dev;  //该路由的输出网络接口
 	/**
 	 * 用于定义该dst_entry实例的可用状态：0（缺省值）表示该结构有效而且可以被使用，2表示该结构将被删除因而不能被使用，-1被IPsec和IPv6使用但不被IPv4使用。
 	 */
@@ -119,15 +119,15 @@ struct dst_entry
 	/**
 	 * neighbour是包含下一跳三层地址到二层地址映射的结构，hh是缓存的二层头。
 	 */
-	struct neighbour	*neighbour;
-	struct hh_cache		*hh;
+	struct neighbour	*neighbour; //为该路由绑定的邻居节点
+	struct hh_cache		*hh;	//硬件头缓存，ARP解析得到的邻居的 mac 地址缓存在这里
 	struct xfrm_state	*xfrm;
 
 	/**
 	 * 分别表示处理ingress报文和处理egress报文的函数。
 	 */
-	int			(*input)(struct sk_buff*);
-	int			(*output)(struct sk_buff*);
+	int			(*input)(struct sk_buff*);  //该路由的输入函数
+	int			(*output)(struct sk_buff*); //该路由的输出函数
 
 #ifdef CONFIG_NET_CLS_ROUTE
 	/**
@@ -399,7 +399,7 @@ static inline int dst_output(struct sk_buff *skb)
 		 * 分段也是在该函数内处理的。
 		 * 最后会调用ip_finish_output来处理邻居子系统
 		 */
-		err = skb->dst->output(skb);
+		err = skb->dst->output(skb);   ip_output
 
 		if (likely(err == 0))
 			return err;

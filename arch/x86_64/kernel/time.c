@@ -495,8 +495,8 @@ unsigned long long sched_clock(void)
 	   CPUs. But the errors should be too small to matter for scheduling
 	   purposes. */
 
-	rdtscll(a);
-	return cycles_2_ns(a);
+	rdtscll(a);   // 读取 TSC 时钟计数，(它计录的是CPU消耗的时钟周期数，所以跟CPU的频率有关)
+	return cycles_2_ns(a);  // TSC 时钟周转换成 ns纳秒
 }
 
 unsigned long get_cmos_time(void)

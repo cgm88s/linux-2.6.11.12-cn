@@ -628,7 +628,7 @@ static int __init acpi_parse_fadt(unsigned long phys, unsigned long size)
 
 
 unsigned long __init
-acpi_find_rsdp (void)
+acpi_find_rsdp (void)   // 查找 "RSD PTR "字符串 来定位 RSDT 表
 {
 	unsigned long		rsdp_phys = 0;
 
@@ -642,9 +642,9 @@ acpi_find_rsdp (void)
 	 * Scan memory looking for the RSDP signature. First search EBDA (low
 	 * memory) paragraphs and then search upper memory (E0000-FFFFF).
 	 */
-	rsdp_phys = acpi_scan_rsdp (0, 0x400);
+	rsdp_phys = acpi_scan_rsdp (0, 0x400);   //查找 RSDP 表，   在 0x400 内 查找 "RSD PTR "字符串
 	if (!rsdp_phys)
-		rsdp_phys = acpi_scan_rsdp (0xE0000, 0xFFFFF);
+		rsdp_phys = acpi_scan_rsdp (0xE0000, 0xFFFFF);  // 查找  RSDP 表，  在 0xE0000 ~ 0xFFFFF 内 查找 "RSD PTR "字符串
 
 	return rsdp_phys;
 }
@@ -833,7 +833,7 @@ acpi_process_madt(void)
  */
 
 /**
- * 在内存中找到RSDP和RSDT/XSDT，从而定位ACPI表。
+ * 在内存中找到RSDP(Root System Descriptor Pointer Table)和RSDT/XSDT，从而定位ACPI表。
  */
 int __init
 acpi_boot_table_init(void)
@@ -882,7 +882,7 @@ acpi_boot_table_init(void)
 }
 
 
-int __init acpi_boot_init(void)
+int __init acpi_boot_init(void)  //ACPI扩展表，不属于ACPI/ACPICA标准，用来支持设备驱动和 AML解释器
 {
 	/*
 	 * If acpi_disabled, bail out

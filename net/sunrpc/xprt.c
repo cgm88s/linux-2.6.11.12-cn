@@ -1425,11 +1425,11 @@ xprt_set_timeout(struct rpc_timeout *to, unsigned int retr, unsigned long incr)
 	to->to_exponential = 0;
 }
 
-unsigned int xprt_udp_slot_table_entries = RPC_DEF_SLOT_TABLE;
-unsigned int xprt_tcp_slot_table_entries = RPC_DEF_SLOT_TABLE;
+unsigned int xprt_udp_slot_table_entries = RPC_DEF_SLOT_TABLE;		// 16
+unsigned int xprt_tcp_slot_table_entries = RPC_DEF_SLOT_TABLE;		// 16
 
 /*
- * Initialize an RPC client
+ * Initialize an RPC client. 初始化一下RPC客户端
  */
 static struct rpc_xprt *
 xprt_setup(int proto, struct sockaddr_in *ap, struct rpc_timeout *to)
@@ -1443,22 +1443,22 @@ xprt_setup(int proto, struct sockaddr_in *ap, struct rpc_timeout *to)
 				proto == IPPROTO_UDP? "UDP" : "TCP");
 
 	entries = (proto == IPPROTO_TCP)?
-		xprt_tcp_slot_table_entries : xprt_udp_slot_table_entries;
+		xprt_tcp_slot_table_entries : xprt_udp_slot_table_entries;   //16
 
 	if ((xprt = kmalloc(sizeof(struct rpc_xprt), GFP_KERNEL)) == NULL)
 		return ERR_PTR(-ENOMEM);
 	memset(xprt, 0, sizeof(*xprt)); /* Nnnngh! */
 	xprt->max_reqs = entries;
 	slot_table_size = entries * sizeof(xprt->slot[0]);
-	xprt->slot = kmalloc(slot_table_size, GFP_KERNEL);
+	xprt->slot = kmalloc(slot_table_size, GFP_KERNEL);    // 分配空可用的请求槽
 	if (xprt->slot == NULL) {
 		kfree(xprt);
 		return ERR_PTR(-ENOMEM);
 	}
 	memset(xprt->slot, 0, slot_table_size);
 
-	xprt->addr = *ap;
-	xprt->prot = proto;
+	xprt->addr = *ap;	
+	xprt->prot = proto;   //IPPROTO_UDP
 	xprt->stream = (proto == IPPROTO_TCP)? 1 : 0;
 	if (xprt->stream) {
 		xprt->cwnd = RPC_MAXCWND(xprt);
@@ -1625,7 +1625,7 @@ failed:
 struct rpc_xprt *
 xprt_create_proto(int proto, struct sockaddr_in *sap, struct rpc_timeout *to)
 {
-	struct rpc_xprt	*xprt;
+	struct rpc_xprt	*xprt;   //RPC 客户端 网络传输信息
 
 	xprt = xprt_setup(proto, sap, to);
 	if (IS_ERR(xprt))

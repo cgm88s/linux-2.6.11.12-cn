@@ -1033,9 +1033,9 @@ static void __init set_trap_gate(unsigned int n, void *addr)
 	_set_gate(idt_table+n,15,0,addr,__KERNEL_CS);
 }
 
-static void __init set_system_gate(unsigned int n, void *addr)
+static void __init set_system_gate(unsigned int n, void *addr)   // 0x80   system_call    系统调入中断 入口
 {
-	_set_gate(idt_table+n,15,3,addr,__KERNEL_CS);
+	_set_gate(idt_table+n,15,3,addr,__KERNEL_CS);   // 设置 中断描述符表
 }
 
 static void __init set_task_gate(unsigned int n, unsigned int gdt_entry)

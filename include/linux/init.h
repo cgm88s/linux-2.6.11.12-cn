@@ -86,15 +86,15 @@ extern char saved_command_line[];
 	static initcall_t __initcall_##fn __attribute_used__ \
 	__attribute__((__section__(".initcall" level ".init"))) = fn
 
-#define core_initcall(fn)		__define_initcall("1",fn)
-#define postcore_initcall(fn)		__define_initcall("2",fn)
-#define arch_initcall(fn)		__define_initcall("3",fn)
-#define subsys_initcall(fn)		__define_initcall("4",fn)
-#define fs_initcall(fn)			__define_initcall("5",fn)
-#define device_initcall(fn)		__define_initcall("6",fn)
-#define late_initcall(fn)		__define_initcall("7",fn)
+#define core_initcall(fn)		__define_initcall("1",fn)		.initcall1.init
+#define postcore_initcall(fn)		__define_initcall("2",fn)	.initcall2.init	
+#define arch_initcall(fn)		__define_initcall("3",fn)		.initcall3.init
+#define subsys_initcall(fn)		__define_initcall("4",fn)		.initcall4.init
+#define fs_initcall(fn)			__define_initcall("5",fn)		.initcall5.init
+#define device_initcall(fn)		__define_initcall("6",fn)		.initcall6.init		
+#define late_initcall(fn)		__define_initcall("7",fn)		.initcall7.init
 
-#define __initcall(fn) device_initcall(fn)
+#define __initcall(fn) device_initcall(fn)						.initcall6.init
 
 #define __exitcall(fn) \
 	static exitcall_t __exitcall_##fn __exit_call = fn

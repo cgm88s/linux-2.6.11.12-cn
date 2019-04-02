@@ -100,8 +100,8 @@
  * 以太网帧头。允许ethhdr结构后面添加其他字段(LLC和SNAP)。
  */
 struct ethhdr {
-	unsigned char	h_dest[ETH_ALEN];	/* destination eth addr	*/
-	unsigned char	h_source[ETH_ALEN];	/* source ether addr	*/
+	unsigned char	h_dest[ETH_ALEN];	/*目的MAC地址 destination eth addr	*/
+	unsigned char	h_source[ETH_ALEN];	/*源MAC地址 source ether addr	*/
 	/**
 	 * 它实际既保存使用的协议，也保存帧的长度。
 	 * 这是因为它有两个字节， 但是以太网帧的最大长度是1500(1536)字节
@@ -109,7 +109,7 @@ struct ethhdr {
 	 * > 1536表示一般的协议如(ETH_P_IP)
 	 * < 1500表示支持LLC或者SNAP
 	 */
-	unsigned short	h_proto;		/* packet type ID field	*/
+	unsigned short	h_proto;		/* 2个字节的包类型 packet type ID field	*/
 } __attribute__((packed));
 
 #ifdef __KERNEL__

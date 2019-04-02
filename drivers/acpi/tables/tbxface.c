@@ -50,7 +50,7 @@
 
 
 #define _COMPONENT          ACPI_TABLES
-	 ACPI_MODULE_NAME    ("tbxface")
+	 ACPI_MODULE_NAME    ("tbxface");
 
 
 /*******************************************************************************
@@ -67,7 +67,7 @@
  ******************************************************************************/
 
 acpi_status
-acpi_load_tables (void)
+acpi_load_tables (void)		// 从RSDT/XSDT表中加载对象并创建namespace
 {
 	struct acpi_pointer             rsdp_address;
 	acpi_status                     status;

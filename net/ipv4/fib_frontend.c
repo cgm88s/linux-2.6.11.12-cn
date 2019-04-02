@@ -137,7 +137,7 @@ out:
 	return dev;
 }
 /**
- * 确定一个L3地址是一个单播、广播和多播地址。
+ * 确定一个L3 网络层 ip地址是一个单播、广播和多播地址。
  */
 unsigned inet_addr_type(u32 addr)
 {
@@ -274,12 +274,12 @@ int ip_rt_ioctl(unsigned int cmd, void __user *arg)
 		rtnl_lock();
 		err = fib_convert_rtentry(cmd, &req.nlh, &req.rtm, &rta, &r);
 		if (err == 0) {
-			if (cmd == SIOCDELRT) {
+			if (cmd == SIOCDELRT) {  // 删除一条路由
 				struct fib_table *tb = fib_get_table(req.rtm.rtm_table);
 				err = -ESRCH;
 				if (tb)
 					err = tb->tb_delete(tb, &req.rtm, &rta, &req.nlh, NULL);
-			} else {
+			} else {		//添加一条新路由
 				struct fib_table *tb = fib_new_table(req.rtm.rtm_table);
 				err = -ENOBUFS;
 				if (tb)

@@ -443,7 +443,7 @@ static void tcp_twkill(unsigned long);
 
 #define TCP_TWKILL_QUOTA	100
 /* 用于存储2MSL等待超时时间较长的timewait控制块的散列表 */
-static struct hlist_head tcp_tw_death_row[TCP_TWKILL_SLOTS];
+static struct hlist_head tcp_tw_death_row[TCP_TWKILL_SLOTS];  // 8
 /* 同步访问tcp_tw_death_row的自旋锁 */
 static DEFINE_SPINLOCK(tw_death_lock);
 /* 每TCP_TWKILL_PERIOD周期执行一次，删除timewait散列表中的twsk */
@@ -522,7 +522,7 @@ static void tcp_twkill(unsigned long dummy)
 	tcp_tw_death_row_slot =
 		((tcp_tw_death_row_slot + 1) & (TCP_TWKILL_SLOTS - 1));
 	if (need_timer)
-		mod_timer(&tcp_tw_timer, jiffies + TCP_TWKILL_PERIOD);
+		mod_timer(&tcp_tw_timer, jiffies + TCP_TWKILL_PERIOD);  tcp_twkill
 out:
 	spin_unlock(&tw_death_lock);
 }
@@ -666,7 +666,7 @@ static void tcp_tw_schedule(struct tcp_tw_bucket *tw, int timeo)
 	hlist_add_head(&tw->tw_death_node, list);
 
 	if (tcp_tw_count++ == 0)/* 之前没有tw控制块，则设置定时器 */
-		mod_timer(&tcp_tw_timer, jiffies+TCP_TWKILL_PERIOD);
+		mod_timer(&tcp_tw_timer, jiffies+TCP_TWKILL_PERIOD);  tcp_twkill
 	spin_unlock(&tw_death_lock);
 }
 

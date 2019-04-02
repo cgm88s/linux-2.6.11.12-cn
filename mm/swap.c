@@ -109,7 +109,7 @@ void fastcall activate_page(struct page *page)
 	struct zone *zone = page_zone(page);
 
 	spin_lock_irq(&zone->lru_lock);
-	if (PageLRU(page) && !PageActive(page)) {
+	if (PageLRU(page) && !PageActive(page)) {   PG_lru
 		del_page_from_inactive_list(zone, page);
 		SetPageActive(page);
 		add_page_to_active_list(zone, page);
@@ -150,8 +150,8 @@ EXPORT_SYMBOL(mark_page_accessed);
  * lru_cache_add: add a page to the page lists
  * @page: the page to add
  */
-static DEFINE_PER_CPU(struct pagevec, lru_add_pvecs) = { 0, };
-static DEFINE_PER_CPU(struct pagevec, lru_add_active_pvecs) = { 0, };
+static DEFINE_PER_CPU(struct pagevec, lru_add_pvecs) = { 0, };     struct pagevec lru_add_pvecs;
+static DEFINE_PER_CPU(struct pagevec, lru_add_active_pvecs) = { 0, }; struct pagevec lru_add_active_pvecs; 
 
 /**
  * 如果页不在LRU链表中，将PG_lru标志置位，得到管理区的lru_lock自谢锁，调用add_page_to_inactive_list把页插入管理区的非活动链表。
@@ -323,7 +323,7 @@ void __pagevec_lru_add(struct pagevec *pvec)
 		}
 		if (TestSetPageLRU(page))
 			BUG();
-		add_page_to_inactive_list(zone, page);
+		add_page_to_inactive_list(zone, page);    // 把page->lru加入到zone->inactive_list
 	}
 	if (zone)
 		spin_unlock_irq(&zone->lru_lock);

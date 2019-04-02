@@ -162,8 +162,8 @@ int
 rpc_register(u32 prog, u32 vers, int prot, unsigned short port, int *okay)
 {
 	struct sockaddr_in	sin;
-	struct rpc_portmap	map;
-	struct rpc_clnt		*pmap_clnt;
+	struct rpc_portmap	map;   // RPC 端口映射信息
+	struct rpc_clnt		*pmap_clnt;   //RPC客户端
 	int error = 0;
 
 	dprintk("RPC: registering (%d, %d, %d, %d) with portmapper.\n",
@@ -199,12 +199,12 @@ rpc_register(u32 prog, u32 vers, int prot, unsigned short port, int *okay)
 
 static struct rpc_clnt *
 pmap_create(char *hostname, struct sockaddr_in *srvaddr, int proto)
-{
+{	//创建一个RPC 客户端
 	struct rpc_xprt	*xprt;
 	struct rpc_clnt	*clnt;
 
 	/* printk("pmap: create xprt\n"); */
-	xprt = xprt_create_proto(proto, srvaddr, NULL);
+	xprt = xprt_create_proto(proto, srvaddr, NULL);   // 初始化一个 RPC 客户端
 	if (IS_ERR(xprt))
 		return (struct rpc_clnt *)xprt;
 	xprt->addr.sin_port = htons(RPC_PMAP_PORT);

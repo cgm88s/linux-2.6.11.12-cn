@@ -155,7 +155,7 @@
  *		86DD	IPv6
  */
 
-static DEFINE_SPINLOCK(ptype_lock);
+static DEFINE_SPINLOCK(ptype_lock);  spinlock_t ptype_lock;
 static struct list_head ptype_base[16];	/* 16 way hashed list */
 static struct list_head ptype_all;		/* Taps */
 
@@ -208,12 +208,12 @@ static struct hlist_head dev_index_head[1<<NETDEV_HASHBITS]; //1<<8 = 256
 static inline struct hlist_head *dev_name_hash(const char *name)
 {
 	unsigned hash = full_name_hash(name, strnlen(name, IFNAMSIZ));
-	return &dev_name_head[hash & ((1<<NETDEV_HASHBITS)-1)];
+	return &dev_name_head[hash & ((1<<NETDEV_HASHBITS)-1)];		// 以设备名为索引的哈希表
 }
 
 static inline struct hlist_head *dev_index_hash(int ifindex)
 {
-	return &dev_index_head[ifindex & ((1<<NETDEV_HASHBITS)-1)];
+	return &dev_index_head[ifindex & ((1<<NETDEV_HASHBITS)-1)];   //以dev->ifindex 为索引的哈希表
 }
 
 /*
@@ -1060,10 +1060,10 @@ int register_netdevice_notifier(struct notifier_block *nb)
 	err = notifier_chain_register(&netdev_chain, nb);
 	if (!err) {
 		for (dev = dev_base; dev; dev = dev->next) {
-			nb->notifier_call(nb, NETDEV_REGISTER, dev);
+			nb->notifier_call(nb, NETDEV_REGISTER, dev);   //对每一个网络设备 发送通知 NETDEV_REGISTER 消息
 
 			if (dev->flags & IFF_UP) 
-				nb->notifier_call(nb, NETDEV_UP, dev);
+				nb->notifier_call(nb, NETDEV_UP, dev);		//如果是UP状态，还发送通知 NETDEV_UP 消息
 		}
 	}
 	rtnl_unlock();
@@ -1824,7 +1824,7 @@ static __inline__ int deliver_skb(struct sk_buff *skb,
 				  struct packet_type *pt_prev)
 {
 	atomic_inc(&skb->users);
-	return pt_prev->func(skb, skb->dev, pt_prev);
+	return pt_prev->func(skb, skb->dev, pt_prev);  ip_packet_type ip_rcv
 }
 
 #if defined(CONFIG_BRIDGE) || defined (CONFIG_BRIDGE_MODULE)
@@ -2024,7 +2024,7 @@ ncls:
 	}
 
 	if (pt_prev) {
-		ret = pt_prev->func(skb, skb->dev, pt_prev);
+		ret = pt_prev->func(skb, skb->dev, pt_prev);  ip_packet_type ip_rcv
 	} else {
 		kfree_skb(skb);
 		/* Jamal, now you will not able to escape explaining
@@ -3165,8 +3165,8 @@ int register_netdevice(struct net_device *dev)
 		dev->iflink = dev->ifindex;
 
 	/* Check for existence of name */
-	head = dev_name_hash(dev->name);
-	hlist_for_each(p, head) {
+	head = dev_name_hash(dev->name);		// 检查 名称是否已存在
+	hlist_for_each(p, head) {				//遍历名称哈希表，比较网络设备名称
 		struct net_device *d
 			= hlist_entry(p, struct net_device, name_hlist);
 		if (!strncmp(d->name, dev->name, IFNAMSIZ)) {
@@ -3245,7 +3245,7 @@ int register_netdevice(struct net_device *dev)
 	/**
 	 * 当netdev_run_todo被调用以结束注册时，它仅更新dev->reg_state并在sysfs文件系统注册设备。
 	 */
-	net_set_todo(dev);
+	net_set_todo(dev);   // 加入 net_dodo_list 链表
 	ret = 0;
 
 out:
@@ -3468,7 +3468,7 @@ out:
  *	and performs basic initialization.
  */
 /**
- * 为net_device分配空间。分配网络设备
+ * 为net_device分配空间。分配网络设备 及其私有空间.
  *		 	sizeof_priv:	私有数据结构大小
  *			name:			设备名
  *			setup:		 	配置函数,这个函数用于初始化net_device结构的部分域

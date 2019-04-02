@@ -208,10 +208,10 @@ svc_exit_thread(struct svc_rqst *rqstp)
 }
 
 /*
- * Register an RPC service with the local portmapper.
+ * Register an RPC service with the local portmapper.	向本地 portmapper注册一个 RPC 服务
  * To unregister a service, call this routine with 
- * proto and port == 0.
- */
+ * proto and port == 0.    								当proto 和 port 为 0时表示 注销 一个RPC服务
+ */		
 int
 svc_register(struct svc_serv *serv, int proto, unsigned short port)
 {
@@ -230,7 +230,7 @@ svc_register(struct svc_serv *serv, int proto, unsigned short port)
 	for (i = 0; i < progp->pg_nvers; i++) {
 		if (progp->pg_vers[i] == NULL)
 			continue;
-		error = rpc_register(progp->pg_prog, i, proto, port, &dummy);
+		error = rpc_register(progp->pg_prog, i, proto, port, &dummy);   //RPC服务注册, 为 porto=port=0时表示注销一个服务
 		if (error < 0)
 			break;
 		if (port && !dummy) {
@@ -260,8 +260,8 @@ svc_process(struct svc_serv *serv, struct svc_rqst *rqstp)
 	struct svc_program	*progp;
 	struct svc_version	*versp = NULL;	/* compiler food */
 	struct svc_procedure	*procp = NULL;
-	struct kvec *		argv = &rqstp->rq_arg.head[0];
-	struct kvec *		resv = &rqstp->rq_res.head[0];
+	struct kvec *		argv = &rqstp->rq_arg.head[0];    //RPC请求头
+	struct kvec *		resv = &rqstp->rq_res.head[0];	  //RPC响应头
 	kxdrproc_t		xdr;
 	u32			*statp;
 	u32			dir, prog, vers, proc,
@@ -277,7 +277,7 @@ svc_process(struct svc_serv *serv, struct svc_rqst *rqstp)
 	 * Initially it has just one page 
 	 */
 	svc_take_page(rqstp); /* must succeed */
-	resv->iov_base = page_address(rqstp->rq_respages[0]);
+	resv->iov_base = page_address(rqstp->rq_respages[0]);		//为RPC响应头分配内存
 	resv->iov_len = 0;
 	rqstp->rq_res.pages = rqstp->rq_respages+1;
 	rqstp->rq_res.len = 0;
@@ -323,7 +323,7 @@ svc_process(struct svc_serv *serv, struct svc_rqst *rqstp)
 	if (progp->pg_authenticate != NULL)
 		auth_res = progp->pg_authenticate(rqstp, &auth_stat);
 	else
-		auth_res = svc_authenticate(rqstp, &auth_stat);
+		auth_res = svc_authenticate(rqstp, &auth_stat);   //验证
 	switch (auth_res) {
 	case SVC_OK:
 		break;
@@ -383,7 +383,7 @@ svc_process(struct svc_serv *serv, struct svc_rqst *rqstp)
 		/**
 		 * 对传过来的过程参数进行解码
 		 */
-		xdr = procp->pc_decode;
+		xdr = procp->pc_decode;  
 		if (xdr && !xdr(rqstp, argv->iov_base, rqstp->rq_argp))
 			goto err_garbage;
 
